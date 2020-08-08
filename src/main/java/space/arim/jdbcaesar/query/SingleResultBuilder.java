@@ -18,6 +18,8 @@
  */
 package space.arim.jdbcaesar.query;
 
+import java.sql.SQLException;
+
 import space.arim.jdbcaesar.error.SubstituteProvider;
 
 public interface SingleResultBuilder<T> extends QueryResultBuilder<T> {

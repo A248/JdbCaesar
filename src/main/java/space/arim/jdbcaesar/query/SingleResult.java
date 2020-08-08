@@ -18,6 +18,8 @@
  */
 package space.arim.jdbcaesar.query;
 
+import space.arim.jdbcaesar.mapper.ResultSingleMapper;
+
 /**
  * A singular query result
  * 
@@ -31,7 +33,7 @@ public interface SingleResult<T> extends QueryResult<T> {
 	 * Executes the query and returns its result. <br>
 	 * <br>
 	 * If there were no results, {@code null} is returned. If there was a {@code SQLException},
-	 * the result of the error handler will be returned. Otherwise, the {@link SingleResultMapper}
+	 * the result of the error handler will be returned. Otherwise, the {@link ResultSingleMapper}
 	 * is used.
 	 * 
 	 */
