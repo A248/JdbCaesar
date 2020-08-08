@@ -38,7 +38,7 @@ The dependency FQDN is `space.arim.jdbcaesar:jdbcaesar:{VERSION}` and is availab
 
 ```java
 Type obj = jdbCaesar
-	.query("SELECT FROM table WHERE value1 = ? AND value2 = ?")
+	.query("SELECT * FROM table WHERE value1 = ? AND value2 = ?")
 	.params("value", 1) // varargs
 	.singleResult( // result mapper body
 			(resultSet) -> new Type(resultSet.getString("column1"), resultSet.getInt("column2")))
@@ -55,7 +55,7 @@ is invoked and the onError callback is used.
 
 ```java
 List<Type> list = jdbCaesar
-	.query("SELECT FROM table WHERE value1 = ? AND value2 = ?")
+	.query("SELECT * FROM table WHERE value1 = ? AND value2 = ?")
 	.params("anothervalue", otherObject)
 	.listResult( // or setResult for a Set
 			(resultSet) -> new Type(resultSet.getString("column1"), resultSet.getInt("column2")))
@@ -70,7 +70,7 @@ each row.
 **Result Based on Update Count and/or Generated Keys**
 
 ```java
-Type obj = jdbCaesar.query("SELECT FROM table WHERE value1 = ? AND value2 = ?")
+Type obj = jdbCaesar.query("SELECT * FROM table WHERE value1 = ? AND value2 = ?")
 	.params(1, "information")
 	.updateCount((updateCount) -> new Type(updateCount)) // Type::new
 	.onError(() -> null)
@@ -78,6 +78,23 @@ Type obj = jdbCaesar.query("SELECT FROM table WHERE value1 = ? AND value2 = ?")
 ```
 
 Use `updateGenKeys` instead of `updateCount` when generated keys are needed.
+
+**Result Based on Full ResultSet**
+
+```java
+Type obj = jdbCaesar
+	.query("SELECT * FROM table WHERE value1 = ? AND value2 = ?")
+	.params("value", 1) // varargs
+	.combinedResult((resultSet) -> {
+	    // Use entire ResultSet here
+	    int count;
+	    while (resultSet.next()) {
+	        count++;
+	    }
+	    return new Type(count);
+	}).onError(() -> null) // fallback value should SQLException occur
+	.execute();
+```
 
 ### Obtaining the Instance
 
@@ -128,4 +145,5 @@ If neither the global isolation level or per transaction value is set, JdbCaesar
 
 **Exception Handling**
 
-JdbCaesar handles all SQLExceptions. Should a SQLException occur during any query in a transaction, the entire transaction is automatically rolled back. The `Transactor` (the body of the transaction) may manually rollback by throwing `RollMeBackException`.
+JdbCaesar handles all SQLExceptions. Should a SQLException occur during any query in a transaction, the entire transaction is automatically rolled back. The `Transactor` (the body of the transaction) may manually rollback by throwing `RollMeBackException`. *RollMeBackException* always has an empty stacktrace to improve performance of rolling back transactions.
+
