@@ -31,6 +31,11 @@ abstract class AbstractResultedQueryResult<T> extends AbstractQueryResult<T> {
 	}
 	
 	@Override
+	boolean readOnly() {
+		return true;
+	}
+	
+	@Override
 	T getResult(PreparedStatement prepStmt) throws SQLException {
 		T result;
 		try (ResultSet resultSet = prepStmt.executeQuery()) {

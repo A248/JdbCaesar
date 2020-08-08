@@ -32,11 +32,6 @@ class VoidResultImpl extends ConnectionAcceptor implements VoidResult {
 	VoidResultImpl(InitialQueryBuilderImpl initialBuilder) {
 		this.initialBuilder = initialBuilder;
 	}
-	
-	@Override
-	boolean readOnly() {
-		return false;
-	}
 
 	@Override
 	public Void execute() {

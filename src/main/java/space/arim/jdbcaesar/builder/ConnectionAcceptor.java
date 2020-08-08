@@ -24,8 +24,8 @@ import java.sql.SQLException;
 abstract class ConnectionAcceptor {
 	
 	boolean readOnly() {
-		// True by default, overriden where necessary
-		return true;
+		// False by default, overridden where necessary
+		return false;
 	}
 
 	abstract void acceptConnection(Connection conn) throws SQLException;
