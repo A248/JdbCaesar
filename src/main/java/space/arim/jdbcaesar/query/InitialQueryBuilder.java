@@ -19,6 +19,7 @@
 package space.arim.jdbcaesar.query;
 
 import space.arim.jdbcaesar.mapper.ResultElementMapper;
+import space.arim.jdbcaesar.mapper.CombinedResultMapper;
 import space.arim.jdbcaesar.mapper.ResultSingleMapper;
 import space.arim.jdbcaesar.mapper.UpdateCountMapper;
 import space.arim.jdbcaesar.mapper.UpdateGenKeysMapper;
@@ -52,8 +53,10 @@ public interface InitialQueryBuilder {
 	InitialQueryBuilder fetchSize(int fetchSize);
 	
 	/**
-	 * Maps to a single result from a result set. The mapper will be fed the first row available, and the mapped
-	 * result returned. If the result set is empty, the mapper is ignored and the result is {@code null}.
+	 * Maps to a single object from a result set. <br>
+	 * <br>
+	 * The mapper will be fed the first row available, and the mapped result returned.
+	 * If the result set is empty, the mapper is ignored and the result is {@code null}.
 	 * 
 	 * @param <T> the type of the result
 	 * @param mapper the single result mapper
@@ -82,6 +85,19 @@ public interface InitialQueryBuilder {
 	<T> SetResultBuilder<T> setResult(ResultElementMapper<T> mapper);
 	
 	/**
+	 * Maps a result from an entire result set. The cursor of the result set fed to the mapper
+	 * will be initially positioned before the first row. <br>
+	 * <br>
+	 * This method is appropriate when mapping all the results of a result set to a single
+	 * object.
+	 * 
+	 * @param <T> the type of the result
+	 * @param mapper the combined result mapper
+	 * @return a result builder
+	 */
+	<T> QueryResultBuilder<T> combinedResult(CombinedResultMapper<T> mapper);
+	
+	/**
 	 * Maps to a void result. Any results are ignored.
 	 * 
 	 * @return a void result
@@ -89,21 +105,21 @@ public interface InitialQueryBuilder {
 	VoidResult voidResult();
 	
 	/**
-	 * Maps to a single result from an update count.
+	 * Maps to a result from an update count.
 	 * 
 	 * @param <T> the type of the result
 	 * @param mapper the update count mapper
-	 * @return a single result builder
+	 * @return a result builder
 	 */
-	<T> SingleResultBuilder<T> updateCount(UpdateCountMapper<T> mapper);
+	<T> QueryResultBuilder<T> updateCount(UpdateCountMapper<T> mapper);
 	
 	/**
-	 * Maps to a single result from an update count and generated keys.
+	 * Maps to a result from an update count and generated keys.
 	 * 
 	 * @param <T> the type of the result
 	 * @param mapper the update count and generated keys mapper
-	 * @return a single result builder
+	 * @return a result builder
 	 */
-	<T> SingleResultBuilder<T> updateGenKeys(UpdateGenKeysMapper<T> mapper);
+	<T> QueryResultBuilder<T> updateGenKeys(UpdateGenKeysMapper<T> mapper);
 	
 }

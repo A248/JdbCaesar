@@ -22,7 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * A mapper which maps a result set to a single value
+ * A mapper which maps a row of a result set to a single value
  * 
  * @author A248
  *
@@ -33,7 +33,9 @@ public interface ResultSingleMapper<T> {
 
 	/**
 	 * Maps a single result from the current row of the specified result set. <br>
-	 * (Implementations thus need not call {@literal rs.next()})
+	 * <Br>
+	 * Implementations thus need not call {@literal rs.next()} since the cursor is
+	 * already positioned on the first row.
 	 * 
 	 * @param resultSet the result set
 	 * @return the single result

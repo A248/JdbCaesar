@@ -22,6 +22,11 @@ import space.arim.jdbcaesar.error.SubstituteProvider;
 
 public interface SingleResultBuilder<T> extends QueryResultBuilder<T> {
 
+	/**
+	 * Sets the default value should a {@link SQLException} occur while executing
+	 * this query, and returns an executable {@link SingleResult}.
+	 * 
+	 */
 	@Override
 	SingleResult<T> onError(SubstituteProvider<T> onError);
 	

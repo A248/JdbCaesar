@@ -26,9 +26,8 @@ import java.sql.Statement;
 import space.arim.jdbcaesar.error.SQLNoUpdateCountException;
 import space.arim.jdbcaesar.error.SubstituteProvider;
 import space.arim.jdbcaesar.mapper.UpdateCountMapper;
-import space.arim.jdbcaesar.query.SingleResult;
 
-class UpdateCountResultImpl<T> extends AbstractQueryResult<T> implements SingleResult<T> {
+class UpdateCountResultImpl<T> extends AbstractQueryResult<T> {
 
 	private final UpdateCountMapper<T> mapper;
 	

@@ -20,10 +20,10 @@ package space.arim.jdbcaesar.builder;
 
 import space.arim.jdbcaesar.error.SubstituteProvider;
 import space.arim.jdbcaesar.mapper.UpdateCountMapper;
-import space.arim.jdbcaesar.query.SingleResult;
-import space.arim.jdbcaesar.query.SingleResultBuilder;
+import space.arim.jdbcaesar.query.QueryResult;
+import space.arim.jdbcaesar.query.QueryResultBuilder;
 
-class UpdateCountResultBuilderImpl<T> extends AbstractQueryResultBuilder implements SingleResultBuilder<T> {
+class UpdateCountResultBuilderImpl<T> extends AbstractQueryResultBuilder implements QueryResultBuilder<T> {
 
 	private final UpdateCountMapper<T> mapper;
 	
@@ -33,7 +33,7 @@ class UpdateCountResultBuilderImpl<T> extends AbstractQueryResultBuilder impleme
 	}
 	
 	@Override
-	public SingleResult<T> onError(SubstituteProvider<T> onError) {
+	public QueryResult<T> onError(SubstituteProvider<T> onError) {
 		return new UpdateCountResultImpl<>(initialBuilder, mapper, onError);
 	}
 	

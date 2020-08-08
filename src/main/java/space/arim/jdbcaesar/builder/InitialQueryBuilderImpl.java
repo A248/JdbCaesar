@@ -19,12 +19,14 @@
 package space.arim.jdbcaesar.builder;
 
 import space.arim.jdbcaesar.adapter.DataTypeAdapter;
+import space.arim.jdbcaesar.mapper.CombinedResultMapper;
 import space.arim.jdbcaesar.mapper.ResultElementMapper;
 import space.arim.jdbcaesar.mapper.ResultSingleMapper;
 import space.arim.jdbcaesar.mapper.UpdateCountMapper;
 import space.arim.jdbcaesar.mapper.UpdateGenKeysMapper;
 import space.arim.jdbcaesar.query.InitialQueryBuilder;
 import space.arim.jdbcaesar.query.ListResultBuilder;
+import space.arim.jdbcaesar.query.QueryResultBuilder;
 import space.arim.jdbcaesar.query.SetResultBuilder;
 import space.arim.jdbcaesar.query.SingleResultBuilder;
 import space.arim.jdbcaesar.query.VoidResult;
@@ -88,17 +90,22 @@ class InitialQueryBuilderImpl implements InitialQueryBuilder {
 	}
 	
 	@Override
+	public <T> QueryResultBuilder<T> combinedResult(CombinedResultMapper<T> mapper) {
+		return new CombinedResultBuilderImpl<>(this, mapper);
+	}
+	
+	@Override
 	public VoidResult voidResult() {
 		return new VoidResultImpl(this);
 	}
 
 	@Override
-	public <T> SingleResultBuilder<T> updateCount(UpdateCountMapper<T> mapper) {
+	public <T> QueryResultBuilder<T> updateCount(UpdateCountMapper<T> mapper) {
 		return new UpdateCountResultBuilderImpl<>(this, mapper);
 	}
 
 	@Override
-	public <T> SingleResultBuilder<T> updateGenKeys(UpdateGenKeysMapper<T> mapper) {
+	public <T> QueryResultBuilder<T> updateGenKeys(UpdateGenKeysMapper<T> mapper) {
 		return new UpdateGenKeysResultBuilderImpl<>(this, mapper);
 	}
 	

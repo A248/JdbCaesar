@@ -16,25 +16,29 @@
  * along with JdbCaesar. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU Lesser General Public License.
  */
-package space.arim.jdbcaesar.builder;
+package space.arim.jdbcaesar.mapper;
 
-import space.arim.jdbcaesar.error.SubstituteProvider;
-import space.arim.jdbcaesar.mapper.UpdateGenKeysMapper;
-import space.arim.jdbcaesar.query.QueryResult;
-import space.arim.jdbcaesar.query.QueryResultBuilder;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-class UpdateGenKeysResultBuilderImpl<T> extends AbstractQueryResultBuilder implements QueryResultBuilder<T> {
+/**
+ * A mapper which maps an entire result set to a result
+ * 
+ * @author A248
+ *
+ * @param <T> the result type
+ */
+@FunctionalInterface
+public interface CombinedResultMapper<T> {
 
-	private final UpdateGenKeysMapper<T> mapper;
-	
-	UpdateGenKeysResultBuilderImpl(InitialQueryBuilderImpl initialBuilder, UpdateGenKeysMapper<T> mapper) {
-		super(initialBuilder);
-		this.mapper = mapper;
-	}
-	
-	@Override
-	public QueryResult<T> onError(SubstituteProvider<T> onError) {
-		return new UpdateGenKeysResultImpl<>(initialBuilder, mapper, onError);
-	}
+	/**
+	 * Maps a result from an entire result set. The cursor is initially positioned before
+	 * the first row.
+	 * 
+	 * @param resultSet the result set
+	 * @return the result
+	 * @throws SQLException generally, per JDBC
+	 */
+	T mapFrom(ResultSet resultSet) throws SQLException;
 	
 }

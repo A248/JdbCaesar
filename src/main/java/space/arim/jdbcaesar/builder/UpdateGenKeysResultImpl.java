@@ -26,9 +26,8 @@ import java.sql.Statement;
 import space.arim.jdbcaesar.error.SQLNoUpdateCountException;
 import space.arim.jdbcaesar.error.SubstituteProvider;
 import space.arim.jdbcaesar.mapper.UpdateGenKeysMapper;
-import space.arim.jdbcaesar.query.SingleResult;
 
-class UpdateGenKeysResultImpl<T> extends AbstractQueryResult<T> implements SingleResult<T> {
+class UpdateGenKeysResultImpl<T> extends AbstractQueryResult<T> {
 
 	private final UpdateGenKeysMapper<T> mapper;
 	

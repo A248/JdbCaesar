@@ -19,22 +19,22 @@
 package space.arim.jdbcaesar.builder;
 
 import space.arim.jdbcaesar.error.SubstituteProvider;
-import space.arim.jdbcaesar.mapper.UpdateGenKeysMapper;
+import space.arim.jdbcaesar.mapper.CombinedResultMapper;
 import space.arim.jdbcaesar.query.QueryResult;
 import space.arim.jdbcaesar.query.QueryResultBuilder;
 
-class UpdateGenKeysResultBuilderImpl<T> extends AbstractQueryResultBuilder implements QueryResultBuilder<T> {
+class CombinedResultBuilderImpl<T> extends AbstractQueryResultBuilder implements QueryResultBuilder<T> {
 
-	private final UpdateGenKeysMapper<T> mapper;
+	private final CombinedResultMapper<T> mapper;
 	
-	UpdateGenKeysResultBuilderImpl(InitialQueryBuilderImpl initialBuilder, UpdateGenKeysMapper<T> mapper) {
+	CombinedResultBuilderImpl(InitialQueryBuilderImpl initialBuilder, CombinedResultMapper<T> mapper) {
 		super(initialBuilder);
 		this.mapper = mapper;
 	}
-	
+
 	@Override
 	public QueryResult<T> onError(SubstituteProvider<T> onError) {
-		return new UpdateGenKeysResultImpl<>(initialBuilder, mapper, onError);
+		return new CombinedResultImpl<>(initialBuilder, mapper, onError);
 	}
-	
+
 }
