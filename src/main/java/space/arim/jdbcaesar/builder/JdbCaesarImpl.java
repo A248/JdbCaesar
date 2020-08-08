@@ -1,0 +1,96 @@
+/* 
+ * JdbCaesar
+ * Copyright © 2020 Anand Beh <https://www.arim.space>
+ * 
+ * JdbCaesar is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * JdbCaesar is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with JdbCaesar. If not, see <https://www.gnu.org/licenses/>
+ * and navigate to version 3 of the GNU Lesser General Public License.
+ */
+package space.arim.jdbcaesar.builder;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Objects;
+
+import space.arim.jdbcaesar.DatabaseSource;
+import space.arim.jdbcaesar.JdbCaesar;
+import space.arim.jdbcaesar.adapter.DataTypeAdapter;
+import space.arim.jdbcaesar.error.ExceptionHandler;
+import space.arim.jdbcaesar.query.InitialQueryBuilder;
+import space.arim.jdbcaesar.transact.InitialTransactionBuilder;
+import space.arim.jdbcaesar.transact.IsolationLevel;
+
+class JdbCaesarImpl implements JdbCaesar {
+
+	private final DatabaseSource databaseSource;
+	private final ExceptionHandler exceptionHandler;
+	final DataTypeAdapter[] adapters;
+	final int fetchSize;
+	final IsolationLevel isolation;
+	
+	private final QueryExecutor executor = new GeneralQueryExecutor();
+	
+	JdbCaesarImpl(DatabaseSource databaseSource, ExceptionHandler exceptionHandler, List<DataTypeAdapter> adapters,
+			int fetchSize, IsolationLevel isolation) {
+		this.databaseSource = Objects.requireNonNull(databaseSource, "databaseSource");
+		this.exceptionHandler = Objects.requireNonNull(exceptionHandler, "exceptionHandler");
+		this.adapters = adapters.toArray(new DataTypeAdapter[] {});
+		this.fetchSize = fetchSize;
+		this.isolation = isolation;
+	}
+
+	@Override
+	public DatabaseSource getDatabaseSource() {
+		return databaseSource;
+	}
+
+	@Override
+	public ExceptionHandler getExceptionHandler() {
+		return exceptionHandler;
+	}
+	
+	@Override
+	public InitialQueryBuilder query(String statement) {
+		return new InitialQueryBuilderImpl(adapters, executor, statement, fetchSize);
+	}
+	
+	@Override
+	public InitialTransactionBuilder transaction() {
+		return new InitialTransactionBuilderImpl(this);
+	}
+	
+	private class GeneralQueryExecutor implements QueryExecutor {
+
+		@Override
+		public void execute(ConnectionAcceptor acceptor) {
+			boolean readOnly = acceptor.readOnly();
+			try (Connection conn = databaseSource.getConnection()) {
+				conn.setTransactionIsolation(isolation.getLevel());
+				conn.setReadOnly(readOnly);
+				try {
+					acceptor.acceptConnection(conn);
+					conn.commit();
+				} catch (SQLException ex) {
+					conn.rollback();
+					throw ex;
+				}
+			} catch (SQLException ex) {
+				exceptionHandler.handleException(ex);
+				acceptor.onError();
+			}
+		}
+		
+	}
+	
+}

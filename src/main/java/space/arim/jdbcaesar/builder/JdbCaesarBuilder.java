@@ -1,0 +1,139 @@
+/* 
+ * JdbCaesar
+ * Copyright © 2020 Anand Beh <https://www.arim.space>
+ * 
+ * JdbCaesar is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * JdbCaesar is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with JdbCaesar. If not, see <https://www.gnu.org/licenses/>
+ * and navigate to version 3 of the GNU Lesser General Public License.
+ */
+package space.arim.jdbcaesar.builder;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import space.arim.jdbcaesar.DatabaseSource;
+import space.arim.jdbcaesar.JdbCaesar;
+import space.arim.jdbcaesar.JdbCaesarInfo;
+import space.arim.jdbcaesar.adapter.DataTypeAdapter;
+import space.arim.jdbcaesar.error.ExceptionHandler;
+import space.arim.jdbcaesar.query.InitialQueryBuilder;
+import space.arim.jdbcaesar.transact.IsolationLevel;
+
+/**
+ * Builder of {@link JdbCaesar} instances
+ * 
+ * @author A248
+ *
+ */
+public class JdbCaesarBuilder implements JdbCaesarInfo {
+
+	private DatabaseSource databaseSource;
+	private ExceptionHandler exceptionHandler;
+	private final List<DataTypeAdapter> adapters = new ArrayList<>();
+	private int fetchSize;
+	private IsolationLevel isolation = IsolationLevel.REPEATABLE_READ;
+	
+	/**
+	 * Sets the database source of this builder to the specified one
+	 * 
+	 * @param databaseSource the database source
+	 * @return this builder
+	 */
+	public JdbCaesarBuilder databaseSource(DatabaseSource databaseSource) {
+		this.databaseSource = databaseSource;
+		return this;
+	}
+	
+	/**
+	 * Sets the exception handler of this builder to the specified one
+	 * 
+	 * @param exceptionHandler the exception handler
+	 * @return this builder
+	 */
+	public JdbCaesarBuilder exceptionHandler(ExceptionHandler exceptionHandler) {
+		this.exceptionHandler = exceptionHandler;
+		return this;
+	}
+	
+	/**
+	 * Adds the specified {@link DataTypeAdapter} to this builder (optional operation)
+	 * 
+	 * @param adapter the data adapter to add
+	 * @return this builder
+	 */
+	public JdbCaesarBuilder addAdapter(DataTypeAdapter adapter) {
+		this.adapters.add(Objects.requireNonNull(adapter, "adapter"));
+		return this;
+	}
+	
+	/**
+	 * Adds the specified {@link DataTypeAdapter}s to this builder (optional operation)
+	 * 
+	 * @param adapters the data adapters to add
+	 * @return this builder
+	 */
+	public JdbCaesarBuilder addAdapters(DataTypeAdapter...adapters) {
+		Objects.requireNonNull(adapters, "adapters");
+		for (DataTypeAdapter adapter : adapters) {
+			this.adapters.add(Objects.requireNonNull(adapter, "adapter in the array"));
+		}
+		return this;
+	}
+	
+	/**
+	 * Sets the default fetch size of all queries to the specified one (optional operation). <br>
+	 * If specified neither here nor in {@link InitialQueryBuilder#fetchSize(int)}, or if the value
+	 * is 0, the vendor dependent default setting will be used.
+	 * 
+	 * @param fetchSize the default fetch size for all queries
+	 * @return this builder
+	 */
+	public JdbCaesarBuilder defaultFetchSize(int fetchSize) {
+		this.fetchSize = fetchSize;
+		return this;
+	}
+	
+	/**
+	 * Sets the default isolation level of this builder to the specified one (optional operation). <br>
+	 * If not set, JdbCaesar will use {@link IsolationLevel#REPEATABLE_READ}. The vendor dependent
+	 * default setting will never be used.
+	 * 
+	 * @param isolation the default transaction isolation level
+	 * @return this builder
+	 */
+	public JdbCaesarBuilder defaultIsolation(IsolationLevel isolation) {
+		this.isolation = isolation;
+		return this;
+	}
+	
+	/**
+	 * Creates a {@link JdbCaesar} from the details of this builder
+	 * 
+	 * @return a freshly created {@code JdbCaesar}
+	 */
+	public JdbCaesar build() {
+		return new JdbCaesarImpl(databaseSource, exceptionHandler, adapters, fetchSize, isolation);
+	}
+
+	@Override
+	public DatabaseSource getDatabaseSource() {
+		return databaseSource;
+	}
+
+	@Override
+	public ExceptionHandler getExceptionHandler() {
+		return exceptionHandler;
+	}
+	
+}
