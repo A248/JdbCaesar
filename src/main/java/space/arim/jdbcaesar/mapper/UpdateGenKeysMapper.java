@@ -35,6 +35,7 @@ public interface UpdateGenKeysMapper<T> {
 
 	/**
 	 * Maps a single value from the specified update count and generated keys. <br>
+	 * The cursor of the {@code genKeys} result set is initially positioned before the first row. <br>
 	 * <br>
 	 * By default, if the query did not produce an update coumt, a {@link SQLNoUpdateCountException} will be thrown
 	 * to cancel the query or transaction and this mapper will not be invoked. <br>
