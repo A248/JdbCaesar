@@ -25,18 +25,18 @@ import space.arim.jdbcaesar.error.SubstituteProvider;
 import space.arim.jdbcaesar.mapper.ResultSingleMapper;
 import space.arim.jdbcaesar.query.SingleResult;
 
-class SingleResultImpl<T> extends AbstractResultedQueryResult<T> implements SingleResult<T> {
+class SingleResultImpl<R> extends AbstractResultedQueryResult<R> implements SingleResult<R> {
 	
-	private final ResultSingleMapper<T> mapper;
+	private final ResultSingleMapper<R> mapper;
 	
-	SingleResultImpl(InitialQueryBuilderImpl initialBuilder, ResultSingleMapper<T> mapper, SubstituteProvider<T> onError) {
+	SingleResultImpl(InitialQueryBuilderImpl initialBuilder, ResultSingleMapper<R> mapper, SubstituteProvider<R> onError) {
 		super(initialBuilder, onError);
 		this.mapper = mapper;
 	}
 
 	@Override
-	T getResult(ResultSet resultSet) throws SQLException {
-		T result;
+	R getResult(ResultSet resultSet) throws SQLException {
+		R result;
 		if (resultSet.next()) {
 			result = mapper.mapValueFrom(resultSet);
 		} else {

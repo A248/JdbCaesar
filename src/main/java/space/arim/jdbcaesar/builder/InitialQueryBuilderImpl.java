@@ -75,22 +75,22 @@ class InitialQueryBuilderImpl implements InitialQueryBuilder {
 	}
 
 	@Override
-	public <T> SingleResultBuilder<T> singleResult(ResultSingleMapper<T> mapper) {
+	public <R> SingleResultBuilder<R> singleResult(ResultSingleMapper<R> mapper) {
 		return new SingleResultBuilderImpl<>(this, mapper);
 	}
 	
 	@Override
-	public <T> ListResultBuilder<T> listResult(ResultElementMapper<T> mapper) {
+	public <E> ListResultBuilder<E> listResult(ResultElementMapper<E> mapper) {
 		return new ListResultBuilderImpl<>(this, mapper);
 	}
 	
 	@Override
-	public <T> SetResultBuilder<T> setResult(ResultElementMapper<T> mapper) {
+	public <E> SetResultBuilder<E> setResult(ResultElementMapper<E> mapper) {
 		return new SetResultBuilderImpl<>(this, mapper);
 	}
 	
 	@Override
-	public <T> QueryResultBuilder<T> combinedResult(CombinedResultMapper<T> mapper) {
+	public <R> QueryResultBuilder<R> combinedResult(CombinedResultMapper<R> mapper) {
 		return new CombinedResultBuilderImpl<>(this, mapper);
 	}
 	
@@ -100,12 +100,12 @@ class InitialQueryBuilderImpl implements InitialQueryBuilder {
 	}
 
 	@Override
-	public <T> QueryResultBuilder<T> updateCount(UpdateCountMapper<T> mapper) {
+	public <R> QueryResultBuilder<R> updateCount(UpdateCountMapper<R> mapper) {
 		return new UpdateCountResultBuilderImpl<>(this, mapper);
 	}
 
 	@Override
-	public <T> QueryResultBuilder<T> updateGenKeys(UpdateGenKeysMapper<T> mapper) {
+	public <R> QueryResultBuilder<R> updateGenKeys(UpdateGenKeysMapper<R> mapper) {
 		return new UpdateGenKeysResultBuilderImpl<>(this, mapper);
 	}
 	

@@ -25,21 +25,21 @@ import java.sql.SQLException;
 import space.arim.jdbcaesar.error.SubstituteProvider;
 import space.arim.jdbcaesar.query.QueryResult;
 
-abstract class AbstractQueryResult<T> extends ConnectionAcceptor implements QueryResult<T> {
+abstract class AbstractQueryResult<R> extends ConnectionAcceptor implements QueryResult<R> {
 
 	final InitialQueryBuilderImpl initialBuilder;
-	private final SubstituteProvider<T> onError;
+	private final SubstituteProvider<R> onError;
 	
-	private T result;
+	private R result;
 	
-	AbstractQueryResult(InitialQueryBuilderImpl initialBuilder, SubstituteProvider<T> onError) {
+	AbstractQueryResult(InitialQueryBuilderImpl initialBuilder, SubstituteProvider<R> onError) {
 		this.initialBuilder = initialBuilder;
 		this.onError = onError;
 	}
 	
 	@Override
 	void acceptConnection(Connection conn) throws SQLException {
-		T result;
+		R result;
 		int fetchSize = initialBuilder.fetchSize;
 
 		try (PreparedStatement prepStmt = prepareStatement(conn)) {
@@ -55,7 +55,7 @@ abstract class AbstractQueryResult<T> extends ConnectionAcceptor implements Quer
 		return conn.prepareStatement(initialBuilder.statement);
 	}
 	
-	abstract T getResult(PreparedStatement prepStmt) throws SQLException;
+	abstract R getResult(PreparedStatement prepStmt) throws SQLException;
 	
 	@Override
 	void onError() {
@@ -63,7 +63,7 @@ abstract class AbstractQueryResult<T> extends ConnectionAcceptor implements Quer
 	}
 	
 	@Override
-	public T execute() {
+	public R execute() {
 		initialBuilder.executor.execute(this);
 		return result;
 	}

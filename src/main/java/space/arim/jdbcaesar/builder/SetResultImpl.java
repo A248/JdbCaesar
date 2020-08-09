@@ -27,18 +27,18 @@ import space.arim.jdbcaesar.error.SubstituteProvider;
 import space.arim.jdbcaesar.mapper.ResultElementMapper;
 import space.arim.jdbcaesar.query.SetResult;
 
-class SetResultImpl<T> extends AbstractResultedQueryResult<Set<T>> implements SetResult<T> {
+class SetResultImpl<E> extends AbstractResultedQueryResult<Set<E>> implements SetResult<E> {
 
-	private final ResultElementMapper<T> mapper;
+	private final ResultElementMapper<E> mapper;
 	
-	SetResultImpl(InitialQueryBuilderImpl initialBuilder, ResultElementMapper<T> mapper, SubstituteProvider<Set<T>> onError) {
+	SetResultImpl(InitialQueryBuilderImpl initialBuilder, ResultElementMapper<E> mapper, SubstituteProvider<Set<E>> onError) {
 		super(initialBuilder, onError);
 		this.mapper = mapper;
 	}
 
 	@Override
-	Set<T> getResult(ResultSet resultSet) throws SQLException {
-		Set<T> result = new HashSet<>();
+	Set<E> getResult(ResultSet resultSet) throws SQLException {
+		Set<E> result = new HashSet<>();
 		while (resultSet.next()) {
 			result.add(mapper.mapElementFrom(resultSet));
 		}

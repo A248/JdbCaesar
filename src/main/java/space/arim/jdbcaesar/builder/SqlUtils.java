@@ -21,6 +21,8 @@ package space.arim.jdbcaesar.builder;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import space.arim.jdbcaesar.error.SubstituteProvider;
+
 final class SqlUtils {
 
 	private SqlUtils() {}
@@ -28,6 +30,23 @@ final class SqlUtils {
 	static void setArguments(PreparedStatement prepStmt, Object[] args) throws SQLException {
 		for (int n = 0; n < args.length; n++) {
 			prepStmt.setObject(n + 1, args[n]);
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	static <T> SubstituteProvider<T> nullSubstitute() {
+		return (SubstituteProvider<T>) NullSubstituteProvider.INSTANCE;
+	}
+	
+	private static class NullSubstituteProvider implements SubstituteProvider<Object> {
+		
+		static final SubstituteProvider<?> INSTANCE = new NullSubstituteProvider();
+		
+		private NullSubstituteProvider() {}
+		
+		@Override
+		public Object getSubstituteValue() {
+			return null;
 		}
 	}
 

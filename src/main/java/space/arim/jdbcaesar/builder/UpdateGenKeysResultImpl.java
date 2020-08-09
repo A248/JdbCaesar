@@ -27,11 +27,11 @@ import space.arim.jdbcaesar.error.SQLNoUpdateCountException;
 import space.arim.jdbcaesar.error.SubstituteProvider;
 import space.arim.jdbcaesar.mapper.UpdateGenKeysMapper;
 
-class UpdateGenKeysResultImpl<T> extends AbstractQueryResult<T> {
+class UpdateGenKeysResultImpl<R> extends AbstractQueryResult<R> {
 
-	private final UpdateGenKeysMapper<T> mapper;
+	private final UpdateGenKeysMapper<R> mapper;
 	
-	UpdateGenKeysResultImpl(InitialQueryBuilderImpl initialBuilder, UpdateGenKeysMapper<T> mapper, SubstituteProvider<T> onError) {
+	UpdateGenKeysResultImpl(InitialQueryBuilderImpl initialBuilder, UpdateGenKeysMapper<R> mapper, SubstituteProvider<R> onError) {
 		super(initialBuilder, onError);
 		this.mapper = mapper;
 	}
@@ -42,8 +42,8 @@ class UpdateGenKeysResultImpl<T> extends AbstractQueryResult<T> {
 	}
 
 	@Override
-	T getResult(PreparedStatement prepStmt) throws SQLException {
-		T result;
+	R getResult(PreparedStatement prepStmt) throws SQLException {
+		R result;
 		prepStmt.execute();
 		int updateCount = prepStmt.getUpdateCount();
 		if (updateCount == -1 && !mapper.allowNonUpdateCount()) {

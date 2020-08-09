@@ -18,6 +18,7 @@
  */
 package space.arim.jdbcaesar.builder;
 
+import java.util.Collections;
 import java.util.Set;
 
 import space.arim.jdbcaesar.error.SubstituteProvider;
@@ -25,18 +26,23 @@ import space.arim.jdbcaesar.mapper.ResultElementMapper;
 import space.arim.jdbcaesar.query.SetResult;
 import space.arim.jdbcaesar.query.SetResultBuilder;
 
-class SetResultBuilderImpl<T> extends AbstractQueryResultBuilder implements SetResultBuilder<T> {
+class SetResultBuilderImpl<E> extends AbstractQueryResultBuilder<Set<E>> implements SetResultBuilder<E> {
 
-	private final ResultElementMapper<T> mapper;
+	private final ResultElementMapper<E> mapper;
 	
-	SetResultBuilderImpl(InitialQueryBuilderImpl initialBuilder, ResultElementMapper<T> mapper) {
+	SetResultBuilderImpl(InitialQueryBuilderImpl initialBuilder, ResultElementMapper<E> mapper) {
 		super(initialBuilder);
 		this.mapper = mapper;
 	}
 	
 	@Override
-	public SetResult<T> onError(SubstituteProvider<Set<T>> onError) {
+	public SetResult<E> onError(SubstituteProvider<Set<E>> onError) {
 		return new SetResultImpl<>(initialBuilder, mapper, onError);
+	}
+	
+	@Override
+	public Set<E> execute() {
+		return onError(Collections::emptySet).execute();
 	}
 	
 }

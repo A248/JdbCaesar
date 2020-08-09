@@ -18,25 +18,26 @@
  */
 package space.arim.jdbcaesar.query;
 
+import java.sql.SQLException;
 import java.util.Set;
 
 /**
- * A set query result
+ * An executable set query result
  * 
  * @author A248
  *
- * @param <T> the element type
+ * @param <E> the element type
  */
-public interface SetResult<T> extends QueryResult<Set<T>> {
+public interface SetResult<E> extends QueryResult<Set<E>> {
 
 	/**
 	 * Executes the query and returns its result. <br>
 	 * <br>
-	 * If there were no results, an an empty set is returned. If there was a {@code SQLException},
-	 * the result of the error handler will be returned.
+	 * If there were no results, an empty set is returned. If there was a {@link SQLException}, the result
+	 * of the error substitute provider will be returned.
 	 * 
 	 */
 	@Override
-	Set<T> execute();
+	Set<E> execute();
 	
 }

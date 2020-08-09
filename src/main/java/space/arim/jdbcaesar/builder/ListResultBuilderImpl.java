@@ -18,6 +18,7 @@
  */
 package space.arim.jdbcaesar.builder;
 
+import java.util.Collections;
 import java.util.List;
 
 import space.arim.jdbcaesar.error.SubstituteProvider;
@@ -25,18 +26,23 @@ import space.arim.jdbcaesar.mapper.ResultElementMapper;
 import space.arim.jdbcaesar.query.ListResult;
 import space.arim.jdbcaesar.query.ListResultBuilder;
 
-class ListResultBuilderImpl<T> extends AbstractQueryResultBuilder implements ListResultBuilder<T> {
+class ListResultBuilderImpl<E> extends AbstractQueryResultBuilder<List<E>> implements ListResultBuilder<E> {
 
-	private final ResultElementMapper<T> mapper;
+	private final ResultElementMapper<E> mapper;
 	
-	ListResultBuilderImpl(InitialQueryBuilderImpl initialBuilder, ResultElementMapper<T> mapper) {
+	ListResultBuilderImpl(InitialQueryBuilderImpl initialBuilder, ResultElementMapper<E> mapper) {
 		super(initialBuilder);
 		this.mapper = mapper;
 	}
 	
 	@Override
-	public ListResult<T> onError(SubstituteProvider<List<T>> onError) {
+	public ListResult<E> onError(SubstituteProvider<List<E>> onError) {
 		return new ListResultImpl<>(initialBuilder, mapper, onError);
+	}
+	
+	@Override
+	public List<E> execute() {
+		return onError(Collections::emptyList).execute();
 	}
 	
 }

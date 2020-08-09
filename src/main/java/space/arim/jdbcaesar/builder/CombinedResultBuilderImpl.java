@@ -21,19 +21,18 @@ package space.arim.jdbcaesar.builder;
 import space.arim.jdbcaesar.error.SubstituteProvider;
 import space.arim.jdbcaesar.mapper.CombinedResultMapper;
 import space.arim.jdbcaesar.query.QueryResult;
-import space.arim.jdbcaesar.query.QueryResultBuilder;
 
-class CombinedResultBuilderImpl<T> extends AbstractQueryResultBuilder implements QueryResultBuilder<T> {
+class CombinedResultBuilderImpl<R> extends AbstractQueryResultBuilder<R> {
 
-	private final CombinedResultMapper<T> mapper;
+	private final CombinedResultMapper<R> mapper;
 	
-	CombinedResultBuilderImpl(InitialQueryBuilderImpl initialBuilder, CombinedResultMapper<T> mapper) {
+	CombinedResultBuilderImpl(InitialQueryBuilderImpl initialBuilder, CombinedResultMapper<R> mapper) {
 		super(initialBuilder);
 		this.mapper = mapper;
 	}
 
 	@Override
-	public QueryResult<T> onError(SubstituteProvider<T> onError) {
+	public QueryResult<R> onError(SubstituteProvider<R> onError) {
 		return new CombinedResultImpl<>(initialBuilder, mapper, onError);
 	}
 

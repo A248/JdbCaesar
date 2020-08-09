@@ -27,18 +27,18 @@ import space.arim.jdbcaesar.error.SubstituteProvider;
 import space.arim.jdbcaesar.mapper.ResultElementMapper;
 import space.arim.jdbcaesar.query.ListResult;
 
-class ListResultImpl<T> extends AbstractResultedQueryResult<List<T>> implements ListResult<T> {
+class ListResultImpl<E> extends AbstractResultedQueryResult<List<E>> implements ListResult<E> {
 
-	private final ResultElementMapper<T> mapper;
+	private final ResultElementMapper<E> mapper;
 	
-	ListResultImpl(InitialQueryBuilderImpl initialBuilder, ResultElementMapper<T> mapper, SubstituteProvider<List<T>> onError) {
+	ListResultImpl(InitialQueryBuilderImpl initialBuilder, ResultElementMapper<E> mapper, SubstituteProvider<List<E>> onError) {
 		super(initialBuilder, onError);
 		this.mapper = mapper;
 	}
 
 	@Override
-	List<T> getResult(ResultSet resultSet) throws SQLException {
-		List<T> result = new ArrayList<>();
+	List<E> getResult(ResultSet resultSet) throws SQLException {
+		List<E> result = new ArrayList<>();
 		while (resultSet.next()) {
 			result.add(mapper.mapElementFrom(resultSet));
 		}

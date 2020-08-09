@@ -18,12 +18,19 @@
  */
 package space.arim.jdbcaesar.builder;
 
-class AbstractQueryResultBuilder {
+import space.arim.jdbcaesar.query.QueryResultBuilder;
+
+abstract class AbstractQueryResultBuilder<R> implements QueryResultBuilder<R> {
 
 	final InitialQueryBuilderImpl initialBuilder;
 	
 	AbstractQueryResultBuilder(InitialQueryBuilderImpl initialBuilder) {
 		this.initialBuilder = initialBuilder;
+	}
+	
+	@Override
+	public R execute() {
+		return onError(SqlUtils.nullSubstitute()).execute();
 	}
 	
 }

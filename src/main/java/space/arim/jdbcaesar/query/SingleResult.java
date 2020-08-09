@@ -18,26 +18,25 @@
  */
 package space.arim.jdbcaesar.query;
 
-import space.arim.jdbcaesar.mapper.ResultSingleMapper;
+import java.sql.SQLException;
 
 /**
- * A singular query result
+ * An executable singular query result
  * 
  * @author A248
  *
- * @param <T> the singular result type
+ * @param <R> the singular result type
  */
-public interface SingleResult<T> extends QueryResult<T> {
+public interface SingleResult<R> extends QueryResult<R> {
 
 	/**
 	 * Executes the query and returns its result. <br>
 	 * <br>
-	 * If there were no results, {@code null} is returned. If there was a {@code SQLException},
-	 * the result of the error handler will be returned. Otherwise, the {@link ResultSingleMapper}
-	 * is used.
+	 * If there were no results, {@code null} is returned. If there was a {@link SQLException},
+	 * the result of the error substitute provider will be returned.
 	 * 
 	 */
 	@Override
-	T execute();
+	R execute();
 	
 }

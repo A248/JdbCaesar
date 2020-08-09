@@ -23,17 +23,17 @@ import space.arim.jdbcaesar.mapper.ResultSingleMapper;
 import space.arim.jdbcaesar.query.SingleResult;
 import space.arim.jdbcaesar.query.SingleResultBuilder;
 
-class SingleResultBuilderImpl<T> extends AbstractQueryResultBuilder implements SingleResultBuilder<T> {
+class SingleResultBuilderImpl<R> extends AbstractQueryResultBuilder<R> implements SingleResultBuilder<R> {
 
-	private final ResultSingleMapper<T> mapper;
+	private final ResultSingleMapper<R> mapper;
 	
-	SingleResultBuilderImpl(InitialQueryBuilderImpl initialBuilder, ResultSingleMapper<T> mapper) {
+	SingleResultBuilderImpl(InitialQueryBuilderImpl initialBuilder, ResultSingleMapper<R> mapper) {
 		super(initialBuilder);
 		this.mapper = mapper;
 	}
 	
 	@Override
-	public SingleResult<T> onError(SubstituteProvider<T> onError) {
+	public SingleResult<R> onError(SubstituteProvider<R> onError) {
 		return new SingleResultImpl<>(initialBuilder, mapper, onError);
 	}
 	

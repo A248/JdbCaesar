@@ -24,17 +24,17 @@ import java.sql.SQLException;
 import space.arim.jdbcaesar.error.SubstituteProvider;
 import space.arim.jdbcaesar.mapper.CombinedResultMapper;
 
-class CombinedResultImpl<T> extends AbstractResultedQueryResult<T> {
+class CombinedResultImpl<R> extends AbstractResultedQueryResult<R> {
 	
-	private final CombinedResultMapper<T> mapper;
+	private final CombinedResultMapper<R> mapper;
 	
-	CombinedResultImpl(InitialQueryBuilderImpl initialBuilder, CombinedResultMapper<T> mapper, SubstituteProvider<T> onError) {
+	CombinedResultImpl(InitialQueryBuilderImpl initialBuilder, CombinedResultMapper<R> mapper, SubstituteProvider<R> onError) {
 		super(initialBuilder, onError);
 		this.mapper = mapper;
 	}
 
 	@Override
-	T getResult(ResultSet resultSet) throws SQLException {
+	R getResult(ResultSet resultSet) throws SQLException {
 		return mapper.mapFrom(resultSet);
 	}
 	

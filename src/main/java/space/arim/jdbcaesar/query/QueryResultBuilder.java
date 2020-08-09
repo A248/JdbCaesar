@@ -18,24 +18,43 @@
  */
 package space.arim.jdbcaesar.query;
 
+import java.sql.SQLException;
+
 import space.arim.jdbcaesar.error.SubstituteProvider;
 
 /**
- * General interface for results almost complete but requiring an error substitute provider.
+ * General interface for results almost complete but requiring some error substitute provider should
+ * a {@link SQLException} occur while executing.
  * 
  * @author A248
  *
- * @param <T> the result type
+ * @param <R> the result type
  */
-public interface QueryResultBuilder<T> {
+public interface QueryResultBuilder<R> {
 
 	/**
-	 * Sets the substitute provider of this result builder to the specified one
-	 * and returns an executable result.
+	 * Sets the substitute provider should a {@link SQLException} occur while executing
+	 * this query, and returns an executable {@link QueryResult}. <br>
+	 * <br>
+	 * Within a transaction, this method is useless, as {@code SQLException}s rollback
+	 * the entire transaction and cause the transaction to return <i>its</i> substitute result.
 	 * 
 	 * @param onError the substitute result provider should an error occur
 	 * @return a {@link QueryResult}
 	 */
-	QueryResult<T> onError(SubstituteProvider<T> onError);
+	QueryResult<R> onError(SubstituteProvider<R> onError);
+	
+	/**
+	 * Executes the query using the default substitute provider. If a {@link SQLException} occurs,
+	 * the substitute provider is invoked and its result returned. Otherwise, the mapped result
+	 * is returned. <br>
+	 * <br>
+	 * For most results, the default substitute provider simply returns {@code null}. For collection
+	 * results ({@link ListResultBuilder} and {@link SetResultBuilder}) the default substitute provider
+	 * returns an empty immutable collection.
+	 * 
+	 * @return the mapped result or the substitute result
+	 */
+	R execute();
 	
 }

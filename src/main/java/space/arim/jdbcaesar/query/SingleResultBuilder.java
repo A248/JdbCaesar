@@ -22,14 +22,35 @@ import java.sql.SQLException;
 
 import space.arim.jdbcaesar.error.SubstituteProvider;
 
-public interface SingleResultBuilder<T> extends QueryResultBuilder<T> {
+/**
+ * Builder of single query results
+ * 
+ * @author A248
+ *
+ * @param <R> the result type
+ */
+public interface SingleResultBuilder<R> extends QueryResultBuilder<R> {
 
 	/**
-	 * Sets the default value should a {@link SQLException} occur while executing
-	 * this query, and returns an executable {@link SingleResult}.
+	 * Sets the substitute provider should a {@link SQLException} occur while executing
+	 * this query, and returns an executable {@link SingleResult}. <br>
+	 * <br>
+	 * Within a transaction, this method is useless, as {@code SQLException}s rollback
+	 * the entire transaction and cause the transaction to return <i>its</i> substitute result.
 	 * 
 	 */
 	@Override
-	SingleResult<T> onError(SubstituteProvider<T> onError);
+	SingleResult<R> onError(SubstituteProvider<R> onError);
+	
+	/**
+	 * Executes the query using the default substitute provider. If a {@link SQLException} occurs,
+	 * {@code null} is returned. Otherwise, the mapped result is returned. <br>
+	 * <br>
+	 * This method is otherwise equivalent to <pre>{@code this.onError(() -> null).execute()}</pre>
+	 * 
+	 * @return the mapped result or {@code null}
+	 */
+	@Override
+	R execute();
 	
 }

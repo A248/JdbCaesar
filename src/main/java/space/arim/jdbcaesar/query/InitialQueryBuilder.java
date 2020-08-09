@@ -58,31 +58,31 @@ public interface InitialQueryBuilder {
 	 * The mapper will be fed the first row available, and the mapped result returned.
 	 * If the result set is empty, the mapper is ignored and the result is {@code null}.
 	 * 
-	 * @param <T> the type of the result
+	 * @param <R> the type of the result
 	 * @param mapper the single result mapper
 	 * @return a single result builder
 	 */
-	<T> SingleResultBuilder<T> singleResult(ResultSingleMapper<T> mapper);
+	<R> SingleResultBuilder<R> singleResult(ResultSingleMapper<R> mapper);
 	
 	/**
 	 * Maps to a list result from a result set. The result will be a list populated by the list mapper.
 	 * It will be empty if the SQL result set is empty.
 	 * 
-	 * @param <T> the type of the result
+	 * @param <E> the element type of the result
 	 * @param mapper the list result mapper
 	 * @return a list result builder
 	 */
-	<T> ListResultBuilder<T> listResult(ResultElementMapper<T> mapper);
+	<E> ListResultBuilder<E> listResult(ResultElementMapper<E> mapper);
 	
 	/**
 	 * Maps to a set result from a result set. The result will be a set populated by the list mapper.
 	 * It will be empty if the SQL result set is empty.
 	 * 
-	 * @param <T> the type of the result
+	 * @param <E> the element type of the result
 	 * @param mapper the list result mapper
 	 * @return a set result builder
 	 */
-	<T> SetResultBuilder<T> setResult(ResultElementMapper<T> mapper);
+	<E> SetResultBuilder<E> setResult(ResultElementMapper<E> mapper);
 	
 	/**
 	 * Maps a result from an entire result set. The cursor of the result set fed to the mapper
@@ -91,11 +91,11 @@ public interface InitialQueryBuilder {
 	 * This method is appropriate when mapping all the results of a result set to a single
 	 * object.
 	 * 
-	 * @param <T> the type of the result
+	 * @param <R> the type of the result
 	 * @param mapper the combined result mapper
 	 * @return a result builder
 	 */
-	<T> QueryResultBuilder<T> combinedResult(CombinedResultMapper<T> mapper);
+	<R> QueryResultBuilder<R> combinedResult(CombinedResultMapper<R> mapper);
 	
 	/**
 	 * Maps to a void result. Any results are ignored.
@@ -107,19 +107,19 @@ public interface InitialQueryBuilder {
 	/**
 	 * Maps to a result from an update count.
 	 * 
-	 * @param <T> the type of the result
+	 * @param <R> the type of the result
 	 * @param mapper the update count mapper
 	 * @return a result builder
 	 */
-	<T> QueryResultBuilder<T> updateCount(UpdateCountMapper<T> mapper);
+	<R> QueryResultBuilder<R> updateCount(UpdateCountMapper<R> mapper);
 	
 	/**
 	 * Maps to a result from an update count and generated keys.
 	 * 
-	 * @param <T> the type of the result
+	 * @param <R> the type of the result
 	 * @param mapper the update count and generated keys mapper
 	 * @return a result builder
 	 */
-	<T> QueryResultBuilder<T> updateGenKeys(UpdateGenKeysMapper<T> mapper);
+	<R> QueryResultBuilder<R> updateGenKeys(UpdateGenKeysMapper<R> mapper);
 	
 }

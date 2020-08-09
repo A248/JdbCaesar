@@ -18,13 +18,42 @@
  */
 package space.arim.jdbcaesar.query;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import space.arim.jdbcaesar.error.SubstituteProvider;
 
-public interface ListResultBuilder<T> extends QueryResultBuilder<List<T>> {
+/**
+ * Builder of list query results
+ * 
+ * @author A248
+ *
+ * @param <E> the element type
+ */
+public interface ListResultBuilder<E> extends QueryResultBuilder<List<E>> {
 
+	/**
+	 * Sets the substitute provider should a {@link SQLException} occur while executing
+	 * this query, and returns an executable {@link ListResult}. <br>
+	 * <br>
+	 * Within a transaction, this method is useless, as {@code SQLException}s rollback
+	 * the entire transaction and cause the transaction to return <i>its</i> substitute result.
+	 * 
+	 */
 	@Override
-	ListResult<T> onError(SubstituteProvider<List<T>> onError);
+	ListResult<E> onError(SubstituteProvider<List<E>> onError);
+	
+	/**
+	 * Executes the query using the default substitute provider. If a {@link SQLException} occurs,
+	 * an empty list is returned. Otherwise, the mapped list is returned. <br>
+	 * <br>
+	 * This method is otherwise equivalent to <pre>{@code this.onError(() -> Collections.emptyList()).execute()}</pre> <br>
+	 * <br>
+	 * Note that no guarantee is made as to the mutability of the returned list.
+	 * 
+	 * @return the mapped list or an empty list
+	 */
+	@Override
+	List<E> execute();
 	
 }

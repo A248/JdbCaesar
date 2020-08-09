@@ -27,11 +27,11 @@ import space.arim.jdbcaesar.error.SQLNoUpdateCountException;
 import space.arim.jdbcaesar.error.SubstituteProvider;
 import space.arim.jdbcaesar.mapper.UpdateCountMapper;
 
-class UpdateCountResultImpl<T> extends AbstractQueryResult<T> {
+class UpdateCountResultImpl<R> extends AbstractQueryResult<R> {
 
-	private final UpdateCountMapper<T> mapper;
+	private final UpdateCountMapper<R> mapper;
 	
-	UpdateCountResultImpl(InitialQueryBuilderImpl initialBuilder, UpdateCountMapper<T> mapper, SubstituteProvider<T> onError) {
+	UpdateCountResultImpl(InitialQueryBuilderImpl initialBuilder, UpdateCountMapper<R> mapper, SubstituteProvider<R> onError) {
 		super(initialBuilder, onError);
 		this.mapper = mapper;
 	}
@@ -42,8 +42,8 @@ class UpdateCountResultImpl<T> extends AbstractQueryResult<T> {
 	}
 	
 	@Override
-	T getResult(PreparedStatement prepStmt) throws SQLException {
-		T result;
+	R getResult(PreparedStatement prepStmt) throws SQLException {
+		R result;
 		prepStmt.execute();
 		int updateCount = prepStmt.getUpdateCount();
 		if (updateCount == -1 && !mapper.allowNonUpdateCount()) {

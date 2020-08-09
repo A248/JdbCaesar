@@ -24,9 +24,9 @@ import java.sql.SQLException;
 
 import space.arim.jdbcaesar.error.SubstituteProvider;
 
-abstract class AbstractResultedQueryResult<T> extends AbstractQueryResult<T> {
+abstract class AbstractResultedQueryResult<R> extends AbstractQueryResult<R> {
 
-	AbstractResultedQueryResult(InitialQueryBuilderImpl initialBuilder, SubstituteProvider<T> onError) {
+	AbstractResultedQueryResult(InitialQueryBuilderImpl initialBuilder, SubstituteProvider<R> onError) {
 		super(initialBuilder, onError);
 	}
 	
@@ -36,14 +36,14 @@ abstract class AbstractResultedQueryResult<T> extends AbstractQueryResult<T> {
 	}
 	
 	@Override
-	T getResult(PreparedStatement prepStmt) throws SQLException {
-		T result;
+	R getResult(PreparedStatement prepStmt) throws SQLException {
+		R result;
 		try (ResultSet resultSet = prepStmt.executeQuery()) {
 			result = getResult(resultSet);
 		}
 		return result;
 	}
 	
-	abstract T getResult(ResultSet resultSet) throws SQLException;
+	abstract R getResult(ResultSet resultSet) throws SQLException;
 
 }

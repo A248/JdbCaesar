@@ -18,25 +18,26 @@
  */
 package space.arim.jdbcaesar.query;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
- * A list query result
+ * An executable list query result
  * 
  * @author A248
  *
- * @param <T> the element type
+ * @param <E> the element type
  */
-public interface ListResult<T> extends QueryResult<List<T>> {
+public interface ListResult<E> extends QueryResult<List<E>> {
 
 	/**
 	 * Executes the query and returns its result. <br>
 	 * <br>
-	 * If there were no results, an an empty list is returned. If there was a {@code SQLException},
-	 * the result of the error handler will be returned.
+	 * If there were no results, an empty list is returned. If there was a {@link SQLException}, the result
+	 * of the error substitute provider will be returned.
 	 * 
 	 */
 	@Override
-	List<T> execute();
+	List<E> execute();
 	
 }

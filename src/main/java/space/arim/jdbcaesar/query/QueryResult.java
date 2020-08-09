@@ -18,20 +18,23 @@
  */
 package space.arim.jdbcaesar.query;
 
+import java.sql.SQLException;
+
 /**
- * An executable query.
+ * An executable query, whose details have already been specified.
  * 
  * @author A248
  *
- * @param <T> the result type
+ * @param <R> the result type
  */
-public interface QueryResult<T> {
+public interface QueryResult<R> {
 
 	/**
-	 * Executes the query. If an error is encountered, the error substitute provider is invoked.
+	 * Executes the query. If a {@link SQLException} is encountered, the error substitute provider is invoked.
+	 * Otherwise, the mapped result is returned.
 	 * 
-	 * @return the result or the substitute result
+	 * @return the mapped result or the substitute result
 	 */
-	T execute();
+	R execute();
 	
 }
