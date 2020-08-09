@@ -31,7 +31,9 @@ import space.arim.jdbcaesar.query.InitialQueryBuilder;
 import space.arim.jdbcaesar.transact.IsolationLevel;
 
 /**
- * Builder of {@link JdbCaesar} instances
+ * Builder of {@link JdbCaesar} instances. <br>
+ * <br>
+ * No null parameter should be passed. {@code NullPointerException} will be thrown otherwise.
  * 
  * @author A248
  *
@@ -51,7 +53,7 @@ public class JdbCaesarBuilder implements JdbCaesarInfo {
 	 * @return this builder
 	 */
 	public JdbCaesarBuilder databaseSource(DatabaseSource databaseSource) {
-		this.databaseSource = databaseSource;
+		this.databaseSource = Objects.requireNonNull(databaseSource, "databaseSource");
 		return this;
 	}
 	
@@ -62,7 +64,7 @@ public class JdbCaesarBuilder implements JdbCaesarInfo {
 	 * @return this builder
 	 */
 	public JdbCaesarBuilder exceptionHandler(ExceptionHandler exceptionHandler) {
-		this.exceptionHandler = exceptionHandler;
+		this.exceptionHandler = Objects.requireNonNull(exceptionHandler, "exceptionHandler");
 		return this;
 	}
 	
@@ -113,7 +115,7 @@ public class JdbCaesarBuilder implements JdbCaesarInfo {
 	 * @return this builder
 	 */
 	public JdbCaesarBuilder defaultIsolation(IsolationLevel isolation) {
-		this.isolation = isolation;
+		this.isolation = Objects.requireNonNull(isolation, "isolation");
 		return this;
 	}
 	
