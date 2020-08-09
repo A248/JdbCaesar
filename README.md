@@ -130,9 +130,7 @@ transactionResult = jdbCaesar.transaction()
 		// multiple queries may be run here in the same fashion
 		// as would be done normally
 		
-		}).onError(() -> fallbackValue).execute();
-	return (Type) result;
-});
+		}).onError(() -> null).execute();
 ```
 
 The body of the transaction should use the `TransactionQuerySource` for running queries as part of the transaction.
