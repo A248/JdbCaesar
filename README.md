@@ -28,7 +28,7 @@ Auto-commit support was initially incorporated into the library. However, it cre
 
 ### Dependency Information
 
-The dependency FQDN is `space.arim.jdbcaesar:jdbcaesar:{VERSION}` and is available from the repository `https://www.arim.space/maven/`.
+The dependency FQDN is `space.arim.jdbcaesar:jdbcaesar:{VERSION}`. It will be available on a repository soon.
 
 ## Usage
 
