@@ -5,7 +5,7 @@
 	
 	<groupId>space.arim.jdbcaesar</groupId>
 	<artifactId>jdbcaesar</artifactId>
-	<version>0.2.0-SNAPSHOT</version>
+	<version>0.3.0-SNAPSHOT</version>
 	
 	<name>JdbCaesar</name>
 	<description>Conquer the verbosity of plain JDBC.</description>
@@ -47,12 +47,12 @@
 	
 	<distributionManagement>
 		<repository>
-			<id>arim-repo</id>
-			<url>https://maven.cloudsmith.io/anand-beh/arim-repo/</url>
+			<id>cloudsmith-deploy</id>
+			<url>https://maven.cloudsmith.io/anand-beh/lesser-gpl3/</url>
 		</repository>
 		<snapshotRepository>
-			<id>arim-repo</id>
-			<url>https://maven.cloudsmith.io/anand-beh/arim-repo/</url>
+			<id>cloudsmith-deploy</id>
+			<url>https://maven.cloudsmith.io/anand-beh/lesser-gpl3/</url>
 		</snapshotRepository>
 	</distributionManagement>
 	

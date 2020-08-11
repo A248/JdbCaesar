@@ -28,7 +28,19 @@ Auto-commit support was initially incorporated into the library. However, it cre
 
 ### Dependency Information
 
-The dependency FQDN is `space.arim.jdbcaesar:jdbcaesar:{VERSION}`. It will be available on a repository soon.
+The dependency FQDN is:
+
+````
+space.arim.jdbcaesar:jdbcaesar:{VERSION}
+````
+
+It is available from:
+
+```
+https://mvn-repo.arim.space/lesser-gpl3/
+```
+
+A thanks to Cloudsmith for providing free repositories for FOSS.
 
 ## Usage
 
