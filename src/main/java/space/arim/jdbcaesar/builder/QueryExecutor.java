@@ -22,4 +22,6 @@ interface QueryExecutor {
 
 	void execute(ConnectionAcceptor acceptor);
 	
+	int nullType();
+	
 }

@@ -43,8 +43,9 @@ class VoidResultImpl extends ConnectionAcceptor implements VoidResult {
 	void acceptConnection(Connection conn) throws SQLException {
 		String statement = initialBuilder.statement;
 		Object[] params = initialBuilder.params;
+		int nullType = initialBuilder.executor.nullType();
 		try (PreparedStatement prepStmt = conn.prepareStatement(statement, Statement.NO_GENERATED_KEYS)) {
-			SqlUtils.setArguments(prepStmt, params);
+			SqlUtils.setArguments(prepStmt, params, nullType);
 			prepStmt.execute();
 		}
 	}

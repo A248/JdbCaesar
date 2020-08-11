@@ -44,7 +44,7 @@ abstract class AbstractQueryResult<R> extends ConnectionAcceptor implements Quer
 
 		try (PreparedStatement prepStmt = prepareStatement(conn)) {
 			prepStmt.setFetchSize(fetchSize);
-			SqlUtils.setArguments(prepStmt, initialBuilder.params);
+			SqlUtils.setArguments(prepStmt, initialBuilder.params, initialBuilder.executor.nullType());
 			result = getResult(prepStmt);
 		}
 		this.result = result;

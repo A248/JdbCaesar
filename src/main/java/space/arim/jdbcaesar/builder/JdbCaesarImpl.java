@@ -38,16 +38,18 @@ class JdbCaesarImpl implements JdbCaesar {
 	final DataTypeAdapter[] adapters;
 	final int fetchSize;
 	final IsolationLevel isolation;
+	final int nullType;
 	
 	private final QueryExecutor executor = new GeneralQueryExecutor();
 	
 	JdbCaesarImpl(DatabaseSource databaseSource, ExceptionHandler exceptionHandler, List<DataTypeAdapter> adapters,
-			int fetchSize, IsolationLevel isolation) {
+			int fetchSize, IsolationLevel isolation, int nullType) {
 		this.databaseSource = Objects.requireNonNull(databaseSource, "databaseSource");
 		this.exceptionHandler = Objects.requireNonNull(exceptionHandler, "exceptionHandler");
 		this.adapters = adapters.toArray(new DataTypeAdapter[] {});
 		this.fetchSize = fetchSize;
 		this.isolation = isolation;
+		this.nullType = nullType;
 	}
 
 	@Override
@@ -89,6 +91,11 @@ class JdbCaesarImpl implements JdbCaesar {
 				exceptionHandler.handleException(ex);
 				acceptor.onError();
 			}
+		}
+		
+		@Override
+		public int nullType() {
+			return nullType;
 		}
 		
 	}

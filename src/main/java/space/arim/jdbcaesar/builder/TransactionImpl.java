@@ -101,4 +101,9 @@ class TransactionQueryExecutor implements QueryExecutor {
 			throw new RollMeBackException(ex);
 		}
 	}
+
+	@Override
+	public int nullType() {
+		return jdbCaesar.nullType;
+	}
 }

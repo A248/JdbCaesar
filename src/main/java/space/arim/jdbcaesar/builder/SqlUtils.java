@@ -27,9 +27,15 @@ final class SqlUtils {
 
 	private SqlUtils() {}
 	
-	static void setArguments(PreparedStatement prepStmt, Object[] args) throws SQLException {
+	static void setArguments(PreparedStatement prepStmt, Object[] args, int nullType) throws SQLException {
 		for (int n = 0; n < args.length; n++) {
-			prepStmt.setObject(n + 1, args[n]);
+			Object param = args[n];
+			int position = n + 1;
+			if (param == null) {
+				prepStmt.setNull(position, nullType);
+			} else {
+				prepStmt.setObject(position, param);
+			}
 		}
 	}
 	

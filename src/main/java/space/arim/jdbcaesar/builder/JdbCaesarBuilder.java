@@ -18,6 +18,7 @@
  */
 package space.arim.jdbcaesar.builder;
 
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -45,6 +46,7 @@ public class JdbCaesarBuilder implements JdbCaesarInfo {
 	private final List<DataTypeAdapter> adapters = new ArrayList<>();
 	private int fetchSize;
 	private IsolationLevel isolation = IsolationLevel.REPEATABLE_READ;
+	private int nullType = Types.NULL;
 	
 	/**
 	 * Sets the database source of this builder to the specified one
@@ -120,12 +122,26 @@ public class JdbCaesarBuilder implements JdbCaesarInfo {
 	}
 	
 	/**
+	 * Allows changing the SQL type passed when {@code null} is given as a statement parameter. <br>
+	 * <br>
+	 * The default value is {@link Types#NULL} and is sufficient for the majority of use caces. However,
+	 * some databases may expect {@link Types#OTHER}, notably Oracle DBMS.
+	 * 
+	 * @param nullType the SQL type to use for null values
+	 * @return this builder
+	 */
+	public JdbCaesarBuilder nullSqlType(int nullType) {
+		this.nullType = nullType;
+		return this;
+	}
+	
+	/**
 	 * Creates a {@link JdbCaesar} from the details of this builder
 	 * 
 	 * @return a freshly created {@code JdbCaesar}
 	 */
 	public JdbCaesar build() {
-		return new JdbCaesarImpl(databaseSource, exceptionHandler, adapters, fetchSize, isolation);
+		return new JdbCaesarImpl(databaseSource, exceptionHandler, adapters, fetchSize, isolation, nullType);
 	}
 
 	@Override
