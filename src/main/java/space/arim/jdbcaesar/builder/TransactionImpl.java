@@ -55,12 +55,12 @@ class TransactionImpl<T> implements Transaction<T> {
 				connection.commit();
 
 			} catch (RollMeBackException ex) {
-				result = onRollback.getSubstituteValue();
 				connection.rollback();
+				result = onRollback.getSubstituteValue();
 			}
 		} catch (SQLException ex) {
-			result = onRollback.getSubstituteValue();
 			jdbCaesar.getExceptionHandler().handleException(ex);
+			result = onRollback.getSubstituteValue();
 		}
 		return result;
 	}
@@ -98,7 +98,6 @@ class TransactionQueryExecutor implements QueryExecutor {
 			acceptor.acceptConnection(connection);
 		} catch (SQLException ex) {
 			jdbCaesar.getExceptionHandler().handleException(ex);
-			acceptor.onError();
 			throw new RollMeBackException(ex);
 		}
 	}
