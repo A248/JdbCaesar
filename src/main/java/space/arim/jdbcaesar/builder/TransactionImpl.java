@@ -21,6 +21,7 @@ package space.arim.jdbcaesar.builder;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import space.arim.jdbcaesar.error.SQLTransactionEncounteredRuntimeException;
 import space.arim.jdbcaesar.error.SubstituteProvider;
 import space.arim.jdbcaesar.query.InitialQueryBuilder;
 import space.arim.jdbcaesar.transact.RollMeBackException;
@@ -56,6 +57,11 @@ class TransactionImpl<T> implements Transaction<T> {
 
 			} catch (RollMeBackException ex) {
 				connection.rollback();
+				result = onRollback.getSubstituteValue();
+
+			} catch (RuntimeException ex) {
+				connection.rollback();
+				jdbCaesar.getExceptionHandler().handleException(new SQLTransactionEncounteredRuntimeException(ex));
 				result = onRollback.getSubstituteValue();
 			}
 		} catch (SQLException ex) {

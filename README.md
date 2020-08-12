@@ -155,5 +155,9 @@ If neither the global isolation level or per transaction value is set, JdbCaesar
 
 **Exception Handling**
 
-JdbCaesar handles all SQLExceptions. Should a SQLException occur during any query in a transaction, the entire transaction is automatically rolled back. The `Transactor` (the body of the transaction) may manually rollback by throwing `RollMeBackException`. *RollMeBackException* always has an empty stacktrace to improve performance of rolling back transactions.
+JdbCaesar handles all SQLExceptions. Should a SQLException occur during any query in a transaction, the entire transaction is automatically rolled back and the exception handled by the global exception handler.
+
+The `Transactor` (the body of the transaction) may manually rollback by throwing `RollMeBackException`. *RollMeBackException* always has an empty stacktrace to improve performance of rolling back. It does not trigger the exception handler.
+
+Any other `RuntimeException` thrown from within the transaction body will 1.) rollback the entire transaction 2.) trigger the exception handler with a `SQLTransactionEncounteredRuntimeException` wrapping the *RuntimeException*.
 
