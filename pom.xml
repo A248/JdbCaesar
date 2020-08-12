@@ -5,7 +5,7 @@
 	
 	<groupId>space.arim.jdbcaesar</groupId>
 	<artifactId>jdbcaesar</artifactId>
-	<version>0.3.1-SNAPSHOT</version>
+	<version>0.3.2-SNAPSHOT</version>
 	
 	<name>JdbCaesar</name>
 	<description>Conquer the verbosity of plain JDBC.</description>
