@@ -30,11 +30,11 @@ import space.arim.jdbcaesar.error.ExceptionHandler;
 public interface JdbCaesarInfo {
 
 	/**
-	 * Gets the database source
+	 * Gets the connection source
 	 * 
-	 * @return the database source
+	 * @return the connection source
 	 */
-	DatabaseSource getDatabaseSource();
+	ConnectionSource getConnectionSource();
 	
 	/**
 	 * Gets the exception handler

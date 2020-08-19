@@ -23,7 +23,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
-import space.arim.jdbcaesar.DatabaseSource;
+import space.arim.jdbcaesar.ConnectionSource;
 import space.arim.jdbcaesar.JdbCaesar;
 import space.arim.jdbcaesar.adapter.DataTypeAdapter;
 import space.arim.jdbcaesar.error.ExceptionHandler;
@@ -33,7 +33,7 @@ import space.arim.jdbcaesar.transact.IsolationLevel;
 
 class JdbCaesarImpl implements JdbCaesar {
 
-	private final DatabaseSource databaseSource;
+	private final ConnectionSource connectionSource;
 	private final ExceptionHandler exceptionHandler;
 	final DataTypeAdapter[] adapters;
 	final int fetchSize;
@@ -42,9 +42,9 @@ class JdbCaesarImpl implements JdbCaesar {
 	
 	private final QueryExecutor executor = new GeneralQueryExecutor();
 	
-	JdbCaesarImpl(DatabaseSource databaseSource, ExceptionHandler exceptionHandler, List<DataTypeAdapter> adapters,
+	JdbCaesarImpl(ConnectionSource connectionSource, ExceptionHandler exceptionHandler, List<DataTypeAdapter> adapters,
 			int fetchSize, IsolationLevel isolation, int nullType) {
-		this.databaseSource = Objects.requireNonNull(databaseSource, "databaseSource");
+		this.connectionSource = Objects.requireNonNull(connectionSource, "connectionSource");
 		this.exceptionHandler = Objects.requireNonNull(exceptionHandler, "exceptionHandler");
 		this.adapters = adapters.toArray(new DataTypeAdapter[] {});
 		this.fetchSize = fetchSize;
@@ -53,8 +53,8 @@ class JdbCaesarImpl implements JdbCaesar {
 	}
 
 	@Override
-	public DatabaseSource getDatabaseSource() {
-		return databaseSource;
+	public ConnectionSource getConnectionSource() {
+		return connectionSource;
 	}
 
 	@Override
@@ -77,7 +77,7 @@ class JdbCaesarImpl implements JdbCaesar {
 		@Override
 		public void execute(ConnectionAcceptor acceptor) {
 			boolean readOnly = acceptor.readOnly();
-			try (Connection conn = databaseSource.getConnection()) {
+			try (Connection conn = connectionSource.getConnection()) {
 				conn.setTransactionIsolation(isolation.getLevel());
 				conn.setReadOnly(readOnly);
 				try {

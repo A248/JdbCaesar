@@ -46,7 +46,7 @@ class TransactionImpl<T> implements Transaction<T> {
 		boolean readOnly = transactionBuilder.readOnly;
 		Transactor<T> transactor = transactionBuilder.transactor;
 		T result;
-		try (Connection connection = jdbCaesar.getDatabaseSource().getConnection()) {
+		try (Connection connection = jdbCaesar.getConnectionSource().getConnection()) {
 			connection.setTransactionIsolation(isolationLevel);
 			connection.setReadOnly(readOnly);
 			try {

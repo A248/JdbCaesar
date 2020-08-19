@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import space.arim.jdbcaesar.DatabaseSource;
+import space.arim.jdbcaesar.ConnectionSource;
 import space.arim.jdbcaesar.JdbCaesar;
 import space.arim.jdbcaesar.JdbCaesarInfo;
 import space.arim.jdbcaesar.adapter.DataTypeAdapter;
@@ -41,7 +41,7 @@ import space.arim.jdbcaesar.transact.IsolationLevel;
  */
 public class JdbCaesarBuilder implements JdbCaesarInfo {
 
-	private DatabaseSource databaseSource;
+	private ConnectionSource connectionSource;
 	private ExceptionHandler exceptionHandler;
 	private final List<DataTypeAdapter> adapters = new ArrayList<>();
 	private int fetchSize;
@@ -49,13 +49,13 @@ public class JdbCaesarBuilder implements JdbCaesarInfo {
 	private int nullType = Types.NULL;
 	
 	/**
-	 * Sets the database source of this builder to the specified one
+	 * Sets the connection source of this builder to the specified one
 	 * 
-	 * @param databaseSource the database source
+	 * @param connectionSource the connection source
 	 * @return this builder
 	 */
-	public JdbCaesarBuilder databaseSource(DatabaseSource databaseSource) {
-		this.databaseSource = Objects.requireNonNull(databaseSource, "databaseSource");
+	public JdbCaesarBuilder connectionSource(ConnectionSource connectionSource) {
+		this.connectionSource = Objects.requireNonNull(connectionSource, "connectionSource");
 		return this;
 	}
 	
@@ -141,12 +141,12 @@ public class JdbCaesarBuilder implements JdbCaesarInfo {
 	 * @return a freshly created {@code JdbCaesar}
 	 */
 	public JdbCaesar build() {
-		return new JdbCaesarImpl(databaseSource, exceptionHandler, adapters, fetchSize, isolation, nullType);
+		return new JdbCaesarImpl(connectionSource, exceptionHandler, adapters, fetchSize, isolation, nullType);
 	}
 
 	@Override
-	public DatabaseSource getDatabaseSource() {
-		return databaseSource;
+	public ConnectionSource getConnectionSource() {
+		return connectionSource;
 	}
 
 	@Override

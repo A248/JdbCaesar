@@ -25,7 +25,7 @@ import java.sql.SQLException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 
-import space.arim.jdbcaesar.DatabaseSource;
+import space.arim.jdbcaesar.ConnectionSource;
 import space.arim.jdbcaesar.JdbCaesar;
 
 public abstract class JdbCaesarImplIT {
@@ -34,7 +34,7 @@ public abstract class JdbCaesarImplIT {
 	
 	@BeforeAll
 	public static void setup() {
-		jdbCaesar = new JdbCaesarBuilder().databaseSource(new DatabaseSource() {
+		jdbCaesar = new JdbCaesarBuilder().connectionSource(new ConnectionSource() {
 
 			@Override
 			public Connection getConnection() throws SQLException {

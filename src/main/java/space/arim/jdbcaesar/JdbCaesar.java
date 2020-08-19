@@ -27,8 +27,8 @@ import space.arim.jdbcaesar.transact.InitialTransactionBuilder;
  * This interface is immutable and thread safe. However, {@link InitialQueryBuilder}s and
  * {@link InitialTransactionBuilder}s returned are intended to only be used by a single thread. <br>
  * <br>
- * When no longer needed, the {@link DatabaseSource} used to create this instance should be closed.
- * This may be done with {@code getDatabaseSource().close()}
+ * When no longer needed, the {@link ConnectionSource} used to create this instance should be closed.
+ * This may be done with {@code getConnectionSource().close()}
  * 
  * @author A248
  *

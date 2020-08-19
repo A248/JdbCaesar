@@ -28,7 +28,7 @@ import java.sql.SQLException;
  * @author A248
  *
  */
-public interface DatabaseSource {
+public interface ConnectionSource {
 
 	/**
 	 * Obtains an open connection. When no longer needed, the connection will be closed
@@ -40,7 +40,7 @@ public interface DatabaseSource {
 	Connection getConnection() throws SQLException;
 	
 	/**
-	 * Closes this database source
+	 * Closes this connection source
 	 * 
 	 * @throws SQLException generally, per JDBC
 	 */
