@@ -52,4 +52,13 @@ public interface UpdateCountMapper<T> {
 		return false;
 	}
 	
+	/**
+	 * Gets an identity update count mapper, equivalent to <pre>{@code (updateCount) -> updateCount}</pre>
+	 * 
+	 * @return an identity update count mapper
+	 */
+	static UpdateCountMapper<Integer> identity() {
+		return (updateCount) -> updateCount;
+	}
+	
 }
