@@ -20,8 +20,15 @@ package space.arim.jdbcaesar.builder;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 abstract class ConnectionAcceptor {
+	
+	final InitialQueryBuilderImpl initialBuilder;
+	
+	ConnectionAcceptor(InitialQueryBuilderImpl initialBuilder) {
+		this.initialBuilder = initialBuilder;
+	}
 	
 	boolean readOnly() {
 		// False by default, overridden where necessary
@@ -31,5 +38,11 @@ abstract class ConnectionAcceptor {
 	abstract void acceptConnection(Connection conn) throws SQLException;
 	
 	abstract void onError();
+	
+	SQLException rewrapExceptionWithDetails(SQLException ex) {
+		return new SQLException(
+				"For statement [" + initialBuilder.statement + "], parameters " + Arrays.deepToString(initialBuilder.params),
+				ex);
+	}
 	
 }

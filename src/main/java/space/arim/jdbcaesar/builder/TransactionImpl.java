@@ -103,6 +103,9 @@ class TransactionQueryExecutor implements QueryExecutor {
 		try {
 			acceptor.acceptConnection(connection);
 		} catch (SQLException ex) {
+			if (jdbCaesar.rewrapExceptions) {
+				ex = acceptor.rewrapExceptionWithDetails(ex);
+			}
 			jdbCaesar.getExceptionHandler().handleException(ex);
 			throw new RollMeBackException(ex);
 		}

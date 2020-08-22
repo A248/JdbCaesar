@@ -27,13 +27,12 @@ import space.arim.jdbcaesar.query.QueryResult;
 
 abstract class AbstractQueryResult<R> extends ConnectionAcceptor implements QueryResult<R> {
 
-	final InitialQueryBuilderImpl initialBuilder;
 	private final SubstituteProvider<R> onError;
 	
 	private R result;
 	
 	AbstractQueryResult(InitialQueryBuilderImpl initialBuilder, SubstituteProvider<R> onError) {
-		this.initialBuilder = initialBuilder;
+		super(initialBuilder);
 		this.onError = onError;
 	}
 	

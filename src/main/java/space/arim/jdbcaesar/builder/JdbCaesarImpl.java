@@ -39,17 +39,19 @@ class JdbCaesarImpl implements JdbCaesar {
 	final int fetchSize;
 	final IsolationLevel isolation;
 	final int nullType;
+	final boolean rewrapExceptions;
 	
 	private final QueryExecutor executor = new GeneralQueryExecutor();
 	
 	JdbCaesarImpl(ConnectionSource connectionSource, ExceptionHandler exceptionHandler, List<DataTypeAdapter> adapters,
-			int fetchSize, IsolationLevel isolation, int nullType) {
+			int fetchSize, IsolationLevel isolation, int nullType, boolean rewrapExceptions) {
 		this.connectionSource = Objects.requireNonNull(connectionSource, "connectionSource");
 		this.exceptionHandler = Objects.requireNonNull(exceptionHandler, "exceptionHandler");
 		this.adapters = adapters.toArray(new DataTypeAdapter[] {});
 		this.fetchSize = fetchSize;
 		this.isolation = isolation;
 		this.nullType = nullType;
+		this.rewrapExceptions = rewrapExceptions;
 	}
 
 	@Override
@@ -88,6 +90,9 @@ class JdbCaesarImpl implements JdbCaesar {
 					throw ex;
 				}
 			} catch (SQLException ex) {
+				if (rewrapExceptions) {
+					ex = acceptor.rewrapExceptionWithDetails(ex);
+				}
 				exceptionHandler.handleException(ex);
 				acceptor.onError();
 			}

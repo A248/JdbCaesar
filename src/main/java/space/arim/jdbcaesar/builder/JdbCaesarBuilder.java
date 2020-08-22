@@ -47,6 +47,7 @@ public class JdbCaesarBuilder implements JdbCaesarInfo {
 	private int fetchSize;
 	private IsolationLevel isolation = IsolationLevel.REPEATABLE_READ;
 	private int nullType = Types.NULL;
+	private boolean rewrapExceptions;
 	
 	/**
 	 * Sets the connection source of this builder to the specified one
@@ -136,12 +137,30 @@ public class JdbCaesarBuilder implements JdbCaesarInfo {
 	}
 	
 	/**
+	 * Decides whether to rewrap {@code SQLException}s with more detailed exception messages.
+	 * By default this setting is false, but using it may be helpful for debugging purposes. <br>
+	 * <br>
+	 * If enabled, all {@code SQLException}s arising from executing statements through JdbCaesar will be
+	 * rewrapped to provide more detailed exception messages, including the executed SQL statement and
+	 * all parameters passed to {@link InitialQueryBuilder#params(Object...)}. Only {@code SQLException}s
+	 * directly arising from query execution will be wrapped, and not circumstantial operations such as
+	 * retrieving and closing connections, setting transaction isolation values, and committing and rolling back.
+	 * 
+	 * @param rewrapExceptions true to rewrap {@code SQLException}s with more details, false otherwise
+	 * @return this builder
+	 */
+	public JdbCaesarBuilder rewrapExceptions(boolean rewrapExceptions) {
+		this.rewrapExceptions = rewrapExceptions;
+		return this;
+	}
+	
+	/**
 	 * Creates a {@link JdbCaesar} from the details of this builder
 	 * 
 	 * @return a freshly created {@code JdbCaesar}
 	 */
 	public JdbCaesar build() {
-		return new JdbCaesarImpl(connectionSource, exceptionHandler, adapters, fetchSize, isolation, nullType);
+		return new JdbCaesarImpl(connectionSource, exceptionHandler, adapters, fetchSize, isolation, nullType, rewrapExceptions);
 	}
 
 	@Override
