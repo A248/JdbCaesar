@@ -42,15 +42,17 @@ class InitialQueryBuilderImpl implements InitialQueryBuilder {
 	ResultSetType type = ResultSetType.FORWARD_ONLY;
 	ResultSetConcurrency concurrency = ResultSetConcurrency.READ_ONLY;
 	int fetchSize;
+	boolean readOnly;
 	
 	private static final Object[] EMPTY_PARAMS = new Object[] {};
 	
 	InitialQueryBuilderImpl(DataTypeAdapter[] adapters, QueryExecutor executor,
-			String statement, int defaultFetchSize) {
+			String statement, int defaultFetchSize, boolean defaultReadOnly) {
 		this.adapters = adapters;
 		this.executor = executor;
 		this.statement = statement;
 		fetchSize = defaultFetchSize;
+		readOnly = defaultReadOnly;
 	}
 	
 	@Override
@@ -81,6 +83,12 @@ class InitialQueryBuilderImpl implements InitialQueryBuilder {
 	@Override
 	public InitialQueryBuilder resultSetConcurrency(ResultSetConcurrency concurrency) {
 		this.concurrency = concurrency;
+		return this;
+	}
+	
+	@Override
+	public InitialQueryBuilder readOnly(boolean readOnly) {
+		this.readOnly = readOnly;
 		return this;
 	}
 	

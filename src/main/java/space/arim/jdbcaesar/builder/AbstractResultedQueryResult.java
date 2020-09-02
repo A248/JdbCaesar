@@ -24,17 +24,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import space.arim.jdbcaesar.error.SubstituteProvider;
-import space.arim.jdbcaesar.query.ResultSetConcurrency;
 
 abstract class AbstractResultedQueryResult<R> extends AbstractQueryResult<R> {
 
 	AbstractResultedQueryResult(InitialQueryBuilderImpl initialBuilder, SubstituteProvider<R> onError) {
 		super(initialBuilder, onError);
-	}
-	
-	@Override
-	boolean readOnly() {
-		return initialBuilder.concurrency == ResultSetConcurrency.READ_ONLY;
 	}
 	
 	@Override

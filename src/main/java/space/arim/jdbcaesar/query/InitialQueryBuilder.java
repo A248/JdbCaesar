@@ -18,11 +18,12 @@
  */
 package space.arim.jdbcaesar.query;
 
-import space.arim.jdbcaesar.mapper.ResultElementMapper;
 import space.arim.jdbcaesar.mapper.CombinedResultMapper;
+import space.arim.jdbcaesar.mapper.ResultElementMapper;
 import space.arim.jdbcaesar.mapper.ResultSingleMapper;
 import space.arim.jdbcaesar.mapper.UpdateCountMapper;
 import space.arim.jdbcaesar.mapper.UpdateGenKeysMapper;
+import space.arim.jdbcaesar.transact.InitialTransactionBuilder;
 
 /**
  * Initial builder from which more specific queries may be created.
@@ -54,7 +55,8 @@ public interface InitialQueryBuilder {
 	
 	/**
 	 * Sets the result set type of the statement to be executed to the specified result set type.
-	 * If a mapper not involving a result set is used, this setting is ignored. <Br>
+	 * If a mapper not involving a result set is used, this setting is ignored. <br>
+	 * <br>
 	 * This is the equivalent of the {@code resultSetType} parameter in
 	 * {@link java.sql.Connection#prepareStatement(String, int, int)}
 	 * 
@@ -65,7 +67,8 @@ public interface InitialQueryBuilder {
 	
 	/**
 	 * Sets the result set concurrency of the statement to be executed to the specified concurrency.
-	 * If a mapper not involving a result set is used, this setting is ignored. <Br>
+	 * If a mapper not involving a result set is used, this setting is ignored. <br>
+	 * <br>
 	 * This is the equivalent of the {@code resultSetConcurrency} parameter in
 	 * {@link java.sql.Connection#prepareStatement(String, int, int)}
 	 * 
@@ -73,6 +76,17 @@ public interface InitialQueryBuilder {
 	 * @return this builder
 	 */
 	InitialQueryBuilder resultSetConcurrency(ResultSetConcurrency concurrency);
+	
+	/**
+	 * Whether to set this query in read only mode. Has no effect within a transaction;
+	 * to set the read only mode of a transaction, use {@link InitialTransactionBuilder#readOnly(boolean)} <br>
+	 * <br>
+	 * This is the equivalent of {@link java.sql.Connection#setReadOnly(boolean)}
+	 * 
+	 * @param readOnly a hint to the driver that the query is read only
+	 * @return this builder
+	 */
+	InitialQueryBuilder readOnly(boolean readOnly);
 	
 	/**
 	 * Maps to a single object from a result set. <br>

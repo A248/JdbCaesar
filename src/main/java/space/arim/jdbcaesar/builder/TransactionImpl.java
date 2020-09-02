@@ -83,7 +83,9 @@ class TransactionQuerySourceImpl implements TransactionQuerySource {
 	
 	@Override
 	public InitialQueryBuilder query(String statement) {
-		return new InitialQueryBuilderImpl(executor.jdbCaesar.adapters, executor, statement, executor.jdbCaesar.fetchSize);
+		JdbCaesarImpl jdbCaesar = executor.jdbCaesar;
+		return new InitialQueryBuilderImpl(
+				jdbCaesar.adapters, executor, statement, jdbCaesar.fetchSize, jdbCaesar.readOnly);
 	}
 	
 }

@@ -38,18 +38,20 @@ class JdbCaesarImpl implements JdbCaesar {
 	final DataTypeAdapter[] adapters;
 	final int fetchSize;
 	final IsolationLevel isolation;
+	final boolean readOnly;
 	final int nullType;
 	final boolean rewrapExceptions;
 	
 	private final QueryExecutor executor = new GeneralQueryExecutor();
 	
 	JdbCaesarImpl(ConnectionSource connectionSource, ExceptionHandler exceptionHandler, List<DataTypeAdapter> adapters,
-			int fetchSize, IsolationLevel isolation, int nullType, boolean rewrapExceptions) {
+			int fetchSize, IsolationLevel isolation, boolean readOnly, int nullType, boolean rewrapExceptions) {
 		this.connectionSource = Objects.requireNonNull(connectionSource, "connectionSource");
 		this.exceptionHandler = Objects.requireNonNull(exceptionHandler, "exceptionHandler");
 		this.adapters = adapters.toArray(new DataTypeAdapter[] {});
 		this.fetchSize = fetchSize;
 		this.isolation = isolation;
+		this.readOnly = readOnly;
 		this.nullType = nullType;
 		this.rewrapExceptions = rewrapExceptions;
 	}
@@ -66,7 +68,7 @@ class JdbCaesarImpl implements JdbCaesar {
 	
 	@Override
 	public InitialQueryBuilder query(String statement) {
-		return new InitialQueryBuilderImpl(adapters, executor, statement, fetchSize);
+		return new InitialQueryBuilderImpl(adapters, executor, statement, fetchSize, readOnly);
 	}
 	
 	@Override
@@ -78,7 +80,7 @@ class JdbCaesarImpl implements JdbCaesar {
 
 		@Override
 		public void execute(ConnectionAcceptor acceptor) {
-			boolean readOnly = acceptor.readOnly();
+			boolean readOnly = acceptor.initialBuilder.readOnly;
 			try (Connection conn = connectionSource.getConnection()) {
 				conn.setTransactionIsolation(isolation.getLevel());
 				conn.setReadOnly(readOnly);

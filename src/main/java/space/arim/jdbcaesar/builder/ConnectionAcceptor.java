@@ -29,11 +29,6 @@ abstract class ConnectionAcceptor {
 	ConnectionAcceptor(InitialQueryBuilderImpl initialBuilder) {
 		this.initialBuilder = initialBuilder;
 	}
-	
-	boolean readOnly() {
-		// False by default, overridden where necessary
-		return false;
-	}
 
 	abstract void acceptConnection(Connection conn) throws SQLException;
 	

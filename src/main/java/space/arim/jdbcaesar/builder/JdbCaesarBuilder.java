@@ -29,6 +29,7 @@ import space.arim.jdbcaesar.JdbCaesarInfo;
 import space.arim.jdbcaesar.adapter.DataTypeAdapter;
 import space.arim.jdbcaesar.error.ExceptionHandler;
 import space.arim.jdbcaesar.query.InitialQueryBuilder;
+import space.arim.jdbcaesar.transact.InitialTransactionBuilder;
 import space.arim.jdbcaesar.transact.IsolationLevel;
 
 /**
@@ -46,6 +47,7 @@ public class JdbCaesarBuilder implements JdbCaesarInfo {
 	private final List<DataTypeAdapter> adapters = new ArrayList<>();
 	private int fetchSize;
 	private IsolationLevel isolation = IsolationLevel.REPEATABLE_READ;
+	private boolean readOnly;
 	private int nullType = Types.NULL;
 	private boolean rewrapExceptions;
 	
@@ -123,6 +125,19 @@ public class JdbCaesarBuilder implements JdbCaesarInfo {
 	}
 	
 	/**
+	 * Sets the default read only mode of queries and transactions. This setting can be overridden
+	 * specifically per query or transaction, using {@link InitialQueryBuilder#readOnly(boolean)}
+	 * or {@link InitialTransactionBuilder#readOnly(boolean)}
+	 * 
+	 * @param readOnly the default read only flag
+	 * @return this builder
+	 */
+	public JdbCaesarBuilder defaultReadOnly(boolean readOnly) {
+		this.readOnly = readOnly;
+		return this;
+	}
+	
+	/**
 	 * Allows changing the SQL type passed when {@code null} is given as a statement parameter. <br>
 	 * <br>
 	 * The default value is {@link Types#NULL} and is sufficient for the majority of use caces. However,
@@ -160,7 +175,8 @@ public class JdbCaesarBuilder implements JdbCaesarInfo {
 	 * @return a freshly created {@code JdbCaesar}
 	 */
 	public JdbCaesar build() {
-		return new JdbCaesarImpl(connectionSource, exceptionHandler, adapters, fetchSize, isolation, nullType, rewrapExceptions);
+		return new JdbCaesarImpl(
+				connectionSource, exceptionHandler, adapters, fetchSize, isolation, readOnly, nullType, rewrapExceptions);
 	}
 
 	@Override
