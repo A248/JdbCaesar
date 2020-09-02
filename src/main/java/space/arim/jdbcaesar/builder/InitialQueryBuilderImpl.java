@@ -27,6 +27,8 @@ import space.arim.jdbcaesar.mapper.UpdateGenKeysMapper;
 import space.arim.jdbcaesar.query.InitialQueryBuilder;
 import space.arim.jdbcaesar.query.ListResultBuilder;
 import space.arim.jdbcaesar.query.QueryResultBuilder;
+import space.arim.jdbcaesar.query.ResultSetConcurrency;
+import space.arim.jdbcaesar.query.ResultSetType;
 import space.arim.jdbcaesar.query.SetResultBuilder;
 import space.arim.jdbcaesar.query.SingleResultBuilder;
 import space.arim.jdbcaesar.query.VoidResult;
@@ -37,6 +39,8 @@ class InitialQueryBuilderImpl implements InitialQueryBuilder {
 	final QueryExecutor executor;
 	final String statement;
 	Object[] params = EMPTY_PARAMS;
+	ResultSetType type = ResultSetType.FORWARD_ONLY;
+	ResultSetConcurrency concurrency = ResultSetConcurrency.READ_ONLY;
 	int fetchSize;
 	
 	private static final Object[] EMPTY_PARAMS = new Object[] {};
@@ -66,6 +70,18 @@ class InitialQueryBuilderImpl implements InitialQueryBuilder {
 			}
 		}
 		return param;
+	}
+	
+	@Override
+	public InitialQueryBuilder resultSetType(ResultSetType type) {
+		this.type = type;
+		return this;
+	}
+	
+	@Override
+	public InitialQueryBuilder resultSetConcurrency(ResultSetConcurrency concurrency) {
+		this.concurrency = concurrency;
+		return this;
 	}
 	
 	@Override

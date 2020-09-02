@@ -53,6 +53,28 @@ public interface InitialQueryBuilder {
 	InitialQueryBuilder fetchSize(int fetchSize);
 	
 	/**
+	 * Sets the result set type of the statement to be executed to the specified result set type.
+	 * If a mapper not involving a result set is used, this setting is ignored. <Br>
+	 * This is the equivalent of the {@code resultSetType} parameter in
+	 * {@link java.sql.Connection#prepareStatement(String, int, int)}
+	 * 
+	 * @param resultSetType the result set type
+	 * @return this builder
+	 */
+	InitialQueryBuilder resultSetType(ResultSetType resultSetType);
+	
+	/**
+	 * Sets the result set concurrency of the statement to be executed to the specified concurrency.
+	 * If a mapper not involving a result set is used, this setting is ignored. <Br>
+	 * This is the equivalent of the {@code resultSetConcurrency} parameter in
+	 * {@link java.sql.Connection#prepareStatement(String, int, int)}
+	 * 
+	 * @param concurrency the result set concurrency
+	 * @return this builder
+	 */
+	InitialQueryBuilder resultSetConcurrency(ResultSetConcurrency concurrency);
+	
+	/**
 	 * Maps to a single object from a result set. <br>
 	 * <br>
 	 * The mapper will be fed the first row available, and the mapped result returned.

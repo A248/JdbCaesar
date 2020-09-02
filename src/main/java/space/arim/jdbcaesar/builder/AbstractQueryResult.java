@@ -49,7 +49,7 @@ abstract class AbstractQueryResult<R> extends ConnectionAcceptor implements Quer
 		this.result = result;
 	}
 	
-	// Overriden where generated keys are concerned
+	// Overriden where generated keys and result set attributes are concerned
 	PreparedStatement prepareStatement(Connection conn) throws SQLException {
 		return conn.prepareStatement(initialBuilder.statement);
 	}

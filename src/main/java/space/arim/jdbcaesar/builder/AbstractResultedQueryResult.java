@@ -18,11 +18,13 @@
  */
 package space.arim.jdbcaesar.builder;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import space.arim.jdbcaesar.error.SubstituteProvider;
+import space.arim.jdbcaesar.query.ResultSetConcurrency;
 
 abstract class AbstractResultedQueryResult<R> extends AbstractQueryResult<R> {
 
@@ -32,7 +34,7 @@ abstract class AbstractResultedQueryResult<R> extends AbstractQueryResult<R> {
 	
 	@Override
 	boolean readOnly() {
-		return true;
+		return initialBuilder.concurrency == ResultSetConcurrency.READ_ONLY;
 	}
 	
 	@Override
@@ -45,5 +47,12 @@ abstract class AbstractResultedQueryResult<R> extends AbstractQueryResult<R> {
 	}
 	
 	abstract R getResult(ResultSet resultSet) throws SQLException;
+	
+	@Override
+	PreparedStatement prepareStatement(Connection conn) throws SQLException {
+		InitialQueryBuilderImpl initialBuilder = this.initialBuilder;
+		return conn.prepareStatement(initialBuilder.statement,
+				initialBuilder.type.getType(), initialBuilder.concurrency.getConcurrency());
+	}
 
 }
