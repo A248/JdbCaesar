@@ -16,34 +16,40 @@
  * along with JdbCaesar. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU Lesser General Public License.
  */
-package space.arim.jdbcaesar.builder;
+package space.arim.jdbcaesar.it.test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
-public class SingleResultIT extends JdbCaesarImplIT {
+import space.arim.jdbcaesar.JdbCaesar;
+import space.arim.jdbcaesar.it.JdbCaesarProvider;
 
-	@Test
-	public void testSingleResult() {
-		jdbCaesar().query(
+public class SingleResultIT {
+
+	@ParameterizedTest
+	@ArgumentsSource(JdbCaesarProvider.class)
+	public void testSingleResult(JdbCaesar jdbCaesar) {
+		jdbCaesar.query(
 				"CREATE TABLE single_res ("
 				+ "integer_value INT NOT NULL, "
-				+ "string_value TEXT NOT NULL)")
+				+ "string_value VARCHAR(255) NOT NULL)")
 		.voidResult().execute();
 
 		Random random = ThreadLocalRandom.current();
 		int integer = random.nextInt();
-		String string = HelperUtils.randomString(random);
+		String string = UUID.randomUUID().toString().substring(random.nextInt(4), 32);
 
-		jdbCaesar().query(
+		jdbCaesar.query(
 				"INSERT INTO single_res (integer_value, string_value) VALUES (?, ?)")
 				.params(integer, string).voidResult().execute();
-		PretendPOJO result = jdbCaesar().query(
+		PretendPOJO result = jdbCaesar.query(
 				"SELECT * FROM single_res")
 				.singleResult((rs) -> new PretendPOJO(rs.getInt("integer_value"), rs.getString("string_value")))
 				.onError(() -> null).execute();

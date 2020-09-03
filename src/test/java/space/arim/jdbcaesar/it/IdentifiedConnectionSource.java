@@ -16,17 +16,19 @@
  * along with JdbCaesar. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU Lesser General Public License.
  */
-package space.arim.jdbcaesar.builder;
+package space.arim.jdbcaesar.it;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Random;
+import space.arim.jdbcaesar.ConnectionSource;
 
-class HelperUtils {
-
-	static String randomString(Random random) {
-		byte[] bytes = new byte[random.nextInt(Byte.MAX_VALUE)];
-		random.nextBytes(bytes);
-		return new String(bytes, StandardCharsets.UTF_8);
+public abstract class IdentifiedConnectionSource implements ConnectionSource {
+	
+	private final Vendor vendor;
+	
+	IdentifiedConnectionSource(Vendor vendor) {
+		this.vendor = vendor;
 	}
 	
+	public Vendor vendor() {
+		return vendor;
+	}
 }

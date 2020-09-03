@@ -16,7 +16,7 @@
  * along with JdbCaesar. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU Lesser General Public License.
  */
-package space.arim.jdbcaesar.builder;
+package space.arim.jdbcaesar.it.test;
 
 import java.util.Objects;
 

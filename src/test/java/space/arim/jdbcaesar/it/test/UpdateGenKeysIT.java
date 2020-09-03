@@ -16,34 +16,42 @@
  * along with JdbCaesar. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU Lesser General Public License.
  */
-package space.arim.jdbcaesar.builder;
+package space.arim.jdbcaesar.it.test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
-public class UpdateGenKeysIT extends JdbCaesarImplIT {
+import space.arim.jdbcaesar.JdbCaesar;
+import space.arim.jdbcaesar.it.IdentifiedConnectionSource;
+import space.arim.jdbcaesar.it.JdbCaesarProvider;
+import space.arim.jdbcaesar.it.Vendor;
 
-	@Test
-	public void testGenKeys() {
-		jdbCaesar().query(
+public class UpdateGenKeysIT {
+
+	@ParameterizedTest
+	@ArgumentsSource(JdbCaesarProvider.class)
+	public void testGenKeys(JdbCaesar jdbCaesar) {
+		Vendor vendor = ((IdentifiedConnectionSource) jdbCaesar.getConnectionSource()).vendor();
+		String identity = vendor.getIdentitySpecification();
+		jdbCaesar.query(
 				"CREATE TABLE update_genkeys ("
-				+ "col1 INT AUTO_INCREMENT PRIMARY KEY, "
-				+ "col2 TEXT NOT NULL)")
+				+ "col1 " + identity + ", "
+				+ "col2 VARCHAR(255) NOT NULL)")
 				.voidResult().execute();
 
 		String col2Value = "Test generated keys";
-		UpdateGenKeys update = jdbCaesar().query("INSERT INTO update_genkeys (col2) VALUES (?)")
+		UpdateGenKeys update = jdbCaesar.query("INSERT INTO update_genkeys (col2) VALUES (?)")
 				.params(col2Value)
 				.updateGenKeys((updateCount, genKeys) -> {
-					return (genKeys.next()) ? new UpdateGenKeys(updateCount, genKeys.getInt("col1")) : null;
+					return (genKeys.next()) ? new UpdateGenKeys(updateCount, genKeys.getInt(1)) : null;
 				}).onError(() -> null).execute();
 		assertNotNull(update);
 		assertEquals(1, update.updateCount);
-		assertEquals(1, update.autoIncrId);
 
-		PretendPOJO pojo = jdbCaesar().query("SELECT * FROM update_genkeys")
+		PretendPOJO pojo = jdbCaesar.query("SELECT * FROM update_genkeys")
 				.singleResult((resultSet) -> new PretendPOJO(resultSet.getInt("col1"), resultSet.getString("col2")))
 				.onError(() -> null).execute();
 		assertEquals(update.autoIncrId, pojo.integer());

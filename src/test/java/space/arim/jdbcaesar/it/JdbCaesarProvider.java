@@ -16,41 +16,32 @@
  * along with JdbCaesar. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU Lesser General Public License.
  */
-package space.arim.jdbcaesar.builder;
+package space.arim.jdbcaesar.it;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
 
-import space.arim.jdbcaesar.ConnectionSource;
 import space.arim.jdbcaesar.JdbCaesar;
+import space.arim.jdbcaesar.builder.JdbCaesarBuilder;
 
-public abstract class JdbCaesarImplIT {
-
-	private static JdbCaesar jdbCaesar;
+public class JdbCaesarProvider implements ArgumentsProvider {
 	
-	@BeforeAll
-	public static void setup() {
-		jdbCaesar = new JdbCaesarBuilder().connectionSource(new ConnectionSource() {
-
-			@Override
-			public Connection getConnection() throws SQLException {
-				return DriverManager.getConnection("jdbc:hsqldb:mem:test;sql.syntax_mys=true", "SA", "");
-			}
-
-			@Override
-			public void close() throws SQLException {
-				
-			}
-			
-		}).exceptionHandler(Assertions::fail).build();
+	@Override
+	public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
+		return ConnectionSources.all().map(this::fromSource).map(Arguments::of);
 	}
 	
-	protected JdbCaesar jdbCaesar() {
-		return jdbCaesar;
+	private JdbCaesar fromSource(IdentifiedConnectionSource source) {
+		JdbCaesarBuilder jdbCaesarBuilder = new JdbCaesarBuilder()
+				.connectionSource(source)
+				.exceptionHandler(Assertions::fail)
+				.rewrapExceptions(true)
+				.defaultIsolation(source.vendor().defaultIsolation());
+		return jdbCaesarBuilder.build();
 	}
-	
+
 }
