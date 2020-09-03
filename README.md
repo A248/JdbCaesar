@@ -11,13 +11,14 @@ JdbCaesar is a simple yet effective alternative substantially reducing the amoun
 
 ### Features
 
-* Easily execute single queries.
-* Don't write database-related try-with-resources blocks any more.
-* No need to sacrifice useful tools such as generated keys.
+* Easily execute single queries. Never again write database-related try-with-resources blocks.
+* Don't sacrifice useful tools such as generated keys, updatable result sets, fetch size control, etc.
 * Made to use functional code.
+* Fully parameterised queries.
 * Support for transactions in the same manner as the rest of the library.
 * Reduce vendor-dependent details.
 * Support for invoking stored procedures.
+* Lightweight library with no dependencies besides JDK 8.
 
 ### Requirements
 
