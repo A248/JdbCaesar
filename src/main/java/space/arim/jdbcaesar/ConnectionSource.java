@@ -40,7 +40,9 @@ public interface ConnectionSource {
 	Connection getConnection() throws SQLException;
 	
 	/**
-	 * Closes this connection source
+	 * Closes this connection source. <br>
+	 * <br>
+	 * This is provided as a convenience to API users, but is not currently used by JdbCaesar.
 	 * 
 	 * @throws SQLException generally, per JDBC
 	 */
