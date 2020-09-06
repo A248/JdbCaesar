@@ -18,7 +18,9 @@
  */
 package space.arim.jdbcaesar.builder;
 
-interface QueryExecutor {
+import space.arim.jdbcaesar.QuerySource;
+
+interface QueryExecutor extends QuerySource {
 
 	void execute(ConnectionAcceptor acceptor);
 	

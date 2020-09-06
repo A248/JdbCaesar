@@ -31,7 +31,7 @@ import space.arim.jdbcaesar.query.InitialQueryBuilder;
 import space.arim.jdbcaesar.transact.InitialTransactionBuilder;
 import space.arim.jdbcaesar.transact.IsolationLevel;
 
-class JdbCaesarImpl implements JdbCaesar {
+class JdbCaesarImpl implements JdbCaesar, QueryExecutor {
 
 	private final ConnectionSource connectionSource;
 	private final ExceptionHandler exceptionHandler;
@@ -42,7 +42,7 @@ class JdbCaesarImpl implements JdbCaesar {
 	final int nullType;
 	final boolean rewrapExceptions;
 	
-	private final QueryExecutor executor = new GeneralQueryExecutor();
+	//private final QueryExecutor executor = new GeneralQueryExecutor();
 	
 	JdbCaesarImpl(ConnectionSource connectionSource, ExceptionHandler exceptionHandler, List<DataTypeAdapter> adapters,
 			int fetchSize, IsolationLevel isolation, boolean readOnly, int nullType, boolean rewrapExceptions) {
@@ -68,7 +68,7 @@ class JdbCaesarImpl implements JdbCaesar {
 	
 	@Override
 	public InitialQueryBuilder query(String statement) {
-		return new InitialQueryBuilderImpl(adapters, executor, statement, fetchSize, readOnly);
+		return new InitialQueryBuilderImpl(adapters, this, statement, fetchSize, readOnly);
 	}
 	
 	@Override
@@ -76,35 +76,31 @@ class JdbCaesarImpl implements JdbCaesar {
 		return new InitialTransactionBuilderImpl(this);
 	}
 	
-	private class GeneralQueryExecutor implements QueryExecutor {
-
-		@Override
-		public void execute(ConnectionAcceptor acceptor) {
-			boolean readOnly = acceptor.initialBuilder.readOnly;
-			try (Connection conn = connectionSource.getConnection()) {
-				conn.setTransactionIsolation(isolation.getLevel());
-				conn.setReadOnly(readOnly);
-				try {
-					acceptor.acceptConnection(conn);
-					conn.commit();
-				} catch (SQLException ex) {
-					conn.rollback();
-					throw ex;
-				}
+	@Override
+	public void execute(ConnectionAcceptor acceptor) {
+		boolean readOnly = acceptor.initialBuilder.readOnly;
+		try (Connection conn = connectionSource.getConnection()) {
+			conn.setTransactionIsolation(isolation.getLevel());
+			conn.setReadOnly(readOnly);
+			try {
+				acceptor.acceptConnection(conn);
+				conn.commit();
 			} catch (SQLException ex) {
-				if (rewrapExceptions) {
-					ex = acceptor.rewrapExceptionWithDetails(ex);
-				}
-				exceptionHandler.handleException(ex);
-				acceptor.onError();
+				conn.rollback();
+				throw ex;
 			}
+		} catch (SQLException ex) {
+			if (rewrapExceptions) {
+				ex = acceptor.rewrapExceptionWithDetails(ex);
+			}
+			exceptionHandler.handleException(ex);
+			acceptor.onError();
 		}
-		
-		@Override
-		public int nullType() {
-			return nullType;
-		}
-		
+	}
+
+	@Override
+	public int nullType() {
+		return nullType;
 	}
 	
 }

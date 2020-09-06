@@ -50,8 +50,7 @@ class TransactionImpl<T> implements Transaction<T> {
 			connection.setTransactionIsolation(isolationLevel);
 			connection.setReadOnly(readOnly);
 			try {
-				TransactionQueryExecutor executor = new TransactionQueryExecutor(connection, jdbCaesar);
-				TransactionQuerySource source = new TransactionQuerySourceImpl(executor);
+				TransactionQuerySource source = new TransactionQuerySourceImpl(connection, jdbCaesar);
 				result = transactor.transact(source);
 				connection.commit();
 
@@ -73,31 +72,19 @@ class TransactionImpl<T> implements Transaction<T> {
 
 }
 
-class TransactionQuerySourceImpl implements TransactionQuerySource {
-
-	private final TransactionQueryExecutor executor;
-	
-	TransactionQuerySourceImpl(TransactionQueryExecutor executor) {
-		this.executor = executor;
-	}
-	
-	@Override
-	public InitialQueryBuilder query(String statement) {
-		JdbCaesarImpl jdbCaesar = executor.jdbCaesar;
-		return new InitialQueryBuilderImpl(
-				jdbCaesar.adapters, executor, statement, jdbCaesar.fetchSize, jdbCaesar.readOnly);
-	}
-	
-}
-
-class TransactionQueryExecutor implements QueryExecutor {
+class TransactionQuerySourceImpl implements TransactionQuerySource, QueryExecutor {
 	
 	private final Connection connection;
 	final JdbCaesarImpl jdbCaesar;
 	
-	TransactionQueryExecutor(Connection connection, JdbCaesarImpl jdbCaesar) {
+	TransactionQuerySourceImpl(Connection connection, JdbCaesarImpl jdbCaesar) {
 		this.connection = connection;
 		this.jdbCaesar = jdbCaesar;
+	}
+	
+	@Override
+	public InitialQueryBuilder query(String statement) {
+		return new InitialQueryBuilderImpl(jdbCaesar.adapters, this, statement, jdbCaesar.fetchSize, jdbCaesar.readOnly);
 	}
 
 	@Override
