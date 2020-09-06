@@ -18,26 +18,15 @@
  */
 package space.arim.jdbcaesar.builder;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Arrays;
+import space.arim.jdbcaesar.adapter.DataTypeAdapter;
+import space.arim.jdbcaesar.transact.InitialTransactedQueryBuilder;
 
-abstract class ConnectionAcceptor {
-	
-	final InitialQueryBuilderImpl<?> initialBuilder;
-	
-	ConnectionAcceptor(InitialQueryBuilderImpl<?> initialBuilder) {
-		this.initialBuilder = initialBuilder;
+class InitialTransactedQueryBuilderImpl extends InitialQueryBuilderImpl<InitialTransactedQueryBuilder>
+		implements InitialTransactedQueryBuilder {
+
+	InitialTransactedQueryBuilderImpl(DataTypeAdapter[] adapters, QueryExecutor<InitialTransactedQueryBuilder> executor,
+			String statement, int defaultFetchSize) {
+		super(adapters, executor, statement, defaultFetchSize);
 	}
 
-	abstract void acceptConnection(Connection conn) throws SQLException;
-	
-	abstract void onError();
-	
-	SQLException rewrapExceptionWithDetails(SQLException ex) {
-		return new SQLException(
-				"For statement [" + initialBuilder.statement + "], parameters " + Arrays.deepToString(initialBuilder.params),
-				ex);
-	}
-	
 }

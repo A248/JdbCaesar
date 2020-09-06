@@ -29,8 +29,8 @@ import space.arim.jdbcaesar.JdbCaesarInfo;
 import space.arim.jdbcaesar.adapter.DataTypeAdapter;
 import space.arim.jdbcaesar.error.ExceptionHandler;
 import space.arim.jdbcaesar.query.InitialQueryBuilder;
-import space.arim.jdbcaesar.transact.InitialTransactionBuilder;
 import space.arim.jdbcaesar.transact.IsolationLevel;
+import space.arim.jdbcaesar.transact.TransactionSettingsBuilder;
 
 /**
  * Builder of {@link JdbCaesar} instances. <br>
@@ -112,9 +112,9 @@ public class JdbCaesarBuilder implements JdbCaesarInfo {
 	}
 	
 	/**
-	 * Sets the default isolation level of this builder to the specified one (optional operation). <br>
-	 * If not set, JdbCaesar will use {@link IsolationLevel#REPEATABLE_READ}. The vendor dependent
-	 * default setting will never be used.
+	 * Sets the default isolation level of queries and transactions. If unspecified, it is {@link IsolationLevel#REPEATABLE_READ}. <br>
+	 * <br>
+	 * This setting can be overridden per query or transaction, using {@link TransactionSettingsBuilder#isolation(IsolationLevel)}
 	 * 
 	 * @param isolation the default transaction isolation level
 	 * @return this builder
@@ -125,9 +125,9 @@ public class JdbCaesarBuilder implements JdbCaesarInfo {
 	}
 	
 	/**
-	 * Sets the default read only mode of queries and transactions. This setting can be overridden
-	 * specifically per query or transaction, using {@link InitialQueryBuilder#readOnly(boolean)}
-	 * or {@link InitialTransactionBuilder#readOnly(boolean)}
+	 * Sets the default read only mode of queries and transactions. If unspecified, it is {@code false}. <br>
+	 * <br>
+	 * This setting can be overridden per query or transaction, using {@link TransactionSettingsBuilder#readOnly(boolean)}
 	 * 
 	 * @param readOnly the default read only flag
 	 * @return this builder

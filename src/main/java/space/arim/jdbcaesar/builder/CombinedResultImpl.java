@@ -28,7 +28,7 @@ class CombinedResultImpl<R> extends AbstractResultedQueryResult<R> {
 	
 	private final CombinedResultMapper<R> mapper;
 	
-	CombinedResultImpl(InitialQueryBuilderImpl initialBuilder, CombinedResultMapper<R> mapper, SubstituteProvider<R> onError) {
+	CombinedResultImpl(InitialQueryBuilderImpl<?> initialBuilder, CombinedResultMapper<R> mapper, SubstituteProvider<R> onError) {
 		super(initialBuilder, onError);
 		this.mapper = mapper;
 	}

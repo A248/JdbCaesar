@@ -27,6 +27,6 @@ import space.arim.jdbcaesar.QuerySource;
  * @author A248
  *
  */
-public interface TransactionQuerySource extends QuerySource {
+public interface TransactionQuerySource extends QuerySource<InitialTransactedQueryBuilder> {
 
 }

@@ -29,7 +29,7 @@ class SingleResultImpl<R> extends AbstractResultedQueryResult<R> implements Sing
 	
 	private final ResultSingleMapper<R> mapper;
 	
-	SingleResultImpl(InitialQueryBuilderImpl initialBuilder, ResultSingleMapper<R> mapper, SubstituteProvider<R> onError) {
+	SingleResultImpl(InitialQueryBuilderImpl<?> initialBuilder, ResultSingleMapper<R> mapper, SubstituteProvider<R> onError) {
 		super(initialBuilder, onError);
 		this.mapper = mapper;
 	}

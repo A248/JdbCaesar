@@ -25,15 +25,11 @@ import space.arim.jdbcaesar.transact.Transactor;
 
 class TransactionBuilderImpl<T> implements TransactionBuilder<T> {
 
-	final JdbCaesarImpl jdbCaesar;
-	final int isolation;
-	final boolean readOnly;
+	final InitialTransactionBuilderImpl initialBuilder;
 	final Transactor<T> transactor;
 	
-	TransactionBuilderImpl(JdbCaesarImpl jdbCaesar, int isolation, boolean readOnly, Transactor<T> transactor) {
-		this.jdbCaesar = jdbCaesar;
-		this.isolation = isolation;
-		this.readOnly = readOnly;
+	TransactionBuilderImpl(InitialTransactionBuilderImpl initialBuilder, Transactor<T> transactor) {
+		this.initialBuilder = initialBuilder;
 		this.transactor = transactor;
 	}
 	

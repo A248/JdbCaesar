@@ -31,7 +31,7 @@ class ListResultImpl<E> extends AbstractResultedQueryResult<List<E>> implements 
 
 	private final ResultElementMapper<E> mapper;
 	
-	ListResultImpl(InitialQueryBuilderImpl initialBuilder, ResultElementMapper<E> mapper, SubstituteProvider<List<E>> onError) {
+	ListResultImpl(InitialQueryBuilderImpl<?> initialBuilder, ResultElementMapper<E> mapper, SubstituteProvider<List<E>> onError) {
 		super(initialBuilder, onError);
 		this.mapper = mapper;
 	}

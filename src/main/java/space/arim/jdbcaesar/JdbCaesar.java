@@ -19,6 +19,7 @@
 package space.arim.jdbcaesar;
 
 import space.arim.jdbcaesar.query.InitialQueryBuilder;
+import space.arim.jdbcaesar.query.InitialSingleQueryBuilder;
 import space.arim.jdbcaesar.transact.InitialTransactionBuilder;
 
 /**
@@ -33,10 +34,14 @@ import space.arim.jdbcaesar.transact.InitialTransactionBuilder;
  * @author A248
  *
  */
-public interface JdbCaesar extends JdbCaesarInfo, QuerySource {
+public interface JdbCaesar extends JdbCaesarInfo, QuerySource<InitialSingleQueryBuilder> {
 
+	/**
+	 * Begins creating a single query
+	 * 
+	 */
 	@Override
-	InitialQueryBuilder query(String statement);
+	InitialSingleQueryBuilder query(String statement);
 	
 	/**
 	 * Begins creating a transaction

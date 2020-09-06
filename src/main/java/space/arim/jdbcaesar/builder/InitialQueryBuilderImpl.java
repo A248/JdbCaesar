@@ -33,35 +33,38 @@ import space.arim.jdbcaesar.query.SetResultBuilder;
 import space.arim.jdbcaesar.query.SingleResultBuilder;
 import space.arim.jdbcaesar.query.VoidResult;
 
-class InitialQueryBuilderImpl implements InitialQueryBuilder {
+class InitialQueryBuilderImpl<B extends InitialQueryBuilder<B>> implements InitialQueryBuilder<B> {
 
 	final DataTypeAdapter[] adapters;
-	final QueryExecutor executor;
+	final QueryExecutor<B> executor;
 	final String statement;
 	Object[] params = EMPTY_PARAMS;
 	ResultSetType type = ResultSetType.FORWARD_ONLY;
 	ResultSetConcurrency concurrency = ResultSetConcurrency.READ_ONLY;
 	int fetchSize;
-	boolean readOnly;
 	
 	private static final Object[] EMPTY_PARAMS = new Object[] {};
 	
-	InitialQueryBuilderImpl(DataTypeAdapter[] adapters, QueryExecutor executor,
-			String statement, int defaultFetchSize, boolean defaultReadOnly) {
+	InitialQueryBuilderImpl(DataTypeAdapter[] adapters, QueryExecutor<B> executor,
+			String statement, int defaultFetchSize) {
 		this.adapters = adapters;
 		this.executor = executor;
 		this.statement = statement;
 		fetchSize = defaultFetchSize;
-		readOnly = defaultReadOnly;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private B generify() {
+		return (B) this;
 	}
 	
 	@Override
-	public InitialQueryBuilder params(Object...params) {
+	public B params(Object...params) {
 		for (int n = 0; n < params.length; n++) {
 			params[n] = adapt(params[n]);
 		}
 		this.params = params;
-		return this;
+		return generify();
 	}
 	
 	private Object adapt(Object param) {
@@ -75,27 +78,21 @@ class InitialQueryBuilderImpl implements InitialQueryBuilder {
 	}
 	
 	@Override
-	public InitialQueryBuilder resultSetType(ResultSetType type) {
+	public B resultSetType(ResultSetType type) {
 		this.type = type;
-		return this;
+		return generify();
 	}
 	
 	@Override
-	public InitialQueryBuilder resultSetConcurrency(ResultSetConcurrency concurrency) {
+	public B resultSetConcurrency(ResultSetConcurrency concurrency) {
 		this.concurrency = concurrency;
-		return this;
+		return generify();
 	}
 	
 	@Override
-	public InitialQueryBuilder readOnly(boolean readOnly) {
-		this.readOnly = readOnly;
-		return this;
-	}
-	
-	@Override
-	public InitialQueryBuilder fetchSize(int fetchSize) {
+	public B fetchSize(int fetchSize) {
 		this.fetchSize = fetchSize;
-		return this;
+		return generify();
 	}
 
 	@Override

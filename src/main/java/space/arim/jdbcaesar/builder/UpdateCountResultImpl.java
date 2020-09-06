@@ -31,7 +31,7 @@ class UpdateCountResultImpl<R> extends AbstractQueryResult<R> {
 
 	private final UpdateCountMapper<R> mapper;
 	
-	UpdateCountResultImpl(InitialQueryBuilderImpl initialBuilder, UpdateCountMapper<R> mapper, SubstituteProvider<R> onError) {
+	UpdateCountResultImpl(InitialQueryBuilderImpl<?> initialBuilder, UpdateCountMapper<R> mapper, SubstituteProvider<R> onError) {
 		super(initialBuilder, onError);
 		this.mapper = mapper;
 	}

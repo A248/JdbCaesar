@@ -27,7 +27,7 @@ import space.arim.jdbcaesar.query.VoidResult;
 
 class VoidResultImpl extends ConnectionAcceptor implements VoidResult {
 
-	VoidResultImpl(InitialQueryBuilderImpl initialBuilder) {
+	VoidResultImpl(InitialQueryBuilderImpl<?> initialBuilder) {
 		super(initialBuilder);
 	}
 

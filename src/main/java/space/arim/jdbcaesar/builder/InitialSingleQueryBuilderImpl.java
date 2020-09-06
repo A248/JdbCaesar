@@ -18,36 +18,30 @@
  */
 package space.arim.jdbcaesar.builder;
 
-import space.arim.jdbcaesar.transact.InitialTransactionBuilder;
+import space.arim.jdbcaesar.adapter.DataTypeAdapter;
+import space.arim.jdbcaesar.query.InitialSingleQueryBuilder;
 import space.arim.jdbcaesar.transact.IsolationLevel;
-import space.arim.jdbcaesar.transact.TransactionBuilder;
-import space.arim.jdbcaesar.transact.Transactor;
 
-class InitialTransactionBuilderImpl implements InitialTransactionBuilder {
+class InitialSingleQueryBuilderImpl extends InitialQueryBuilderImpl<InitialSingleQueryBuilder> implements InitialSingleQueryBuilder {
 
-	final JdbCaesarImpl jdbCaesar;
 	final MutableTransactionSettings settings;
 	
-	InitialTransactionBuilderImpl(JdbCaesarImpl jdbCaesar, IsolationLevel defaultIsolation, boolean defaultReadOnly) {
-		this.jdbCaesar = jdbCaesar;
+	InitialSingleQueryBuilderImpl(DataTypeAdapter[] adapters, QueryExecutor<InitialSingleQueryBuilder> executor,
+			String statement, int defaultFetchSize, IsolationLevel defaultIsolation, boolean defaultReadOnly) {
+		super(adapters, executor, statement, defaultFetchSize);
 		settings = new MutableTransactionSettings(defaultIsolation, defaultReadOnly);
 	}
 
 	@Override
-	public InitialTransactionBuilder isolation(IsolationLevel isolation) {
+	public InitialSingleQueryBuilder isolation(IsolationLevel isolation) {
 		settings.isolation = isolation;
 		return this;
 	}
 
 	@Override
-	public InitialTransactionBuilder readOnly(boolean readOnly) {
+	public InitialSingleQueryBuilder readOnly(boolean readOnly) {
 		settings.readOnly = readOnly;
 		return this;
 	}
-	
-	@Override
-	public <T> TransactionBuilder<T> transactor(Transactor<T> transactor) {
-		return new TransactionBuilderImpl<>(this, transactor);
-	}
-	
+
 }

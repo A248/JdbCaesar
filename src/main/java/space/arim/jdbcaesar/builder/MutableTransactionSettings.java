@@ -18,26 +18,16 @@
  */
 package space.arim.jdbcaesar.builder;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Arrays;
+import space.arim.jdbcaesar.transact.IsolationLevel;
 
-abstract class ConnectionAcceptor {
-	
-	final InitialQueryBuilderImpl<?> initialBuilder;
-	
-	ConnectionAcceptor(InitialQueryBuilderImpl<?> initialBuilder) {
-		this.initialBuilder = initialBuilder;
-	}
+class MutableTransactionSettings {
 
-	abstract void acceptConnection(Connection conn) throws SQLException;
+	IsolationLevel isolation;
+	boolean readOnly;
 	
-	abstract void onError();
-	
-	SQLException rewrapExceptionWithDetails(SQLException ex) {
-		return new SQLException(
-				"For statement [" + initialBuilder.statement + "], parameters " + Arrays.deepToString(initialBuilder.params),
-				ex);
+	MutableTransactionSettings(IsolationLevel isolation, boolean readOnly) {
+		this.isolation = isolation;
+		this.readOnly = readOnly;
 	}
 	
 }

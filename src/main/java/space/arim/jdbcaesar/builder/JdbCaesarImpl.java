@@ -27,11 +27,11 @@ import space.arim.jdbcaesar.ConnectionSource;
 import space.arim.jdbcaesar.JdbCaesar;
 import space.arim.jdbcaesar.adapter.DataTypeAdapter;
 import space.arim.jdbcaesar.error.ExceptionHandler;
-import space.arim.jdbcaesar.query.InitialQueryBuilder;
+import space.arim.jdbcaesar.query.InitialSingleQueryBuilder;
 import space.arim.jdbcaesar.transact.InitialTransactionBuilder;
 import space.arim.jdbcaesar.transact.IsolationLevel;
 
-class JdbCaesarImpl implements JdbCaesar, QueryExecutor {
+class JdbCaesarImpl implements JdbCaesar, QueryExecutor<InitialSingleQueryBuilder> {
 
 	private final ConnectionSource connectionSource;
 	private final ExceptionHandler exceptionHandler;
@@ -41,8 +41,6 @@ class JdbCaesarImpl implements JdbCaesar, QueryExecutor {
 	final boolean readOnly;
 	final int nullType;
 	final boolean rewrapExceptions;
-	
-	//private final QueryExecutor executor = new GeneralQueryExecutor();
 	
 	JdbCaesarImpl(ConnectionSource connectionSource, ExceptionHandler exceptionHandler, List<DataTypeAdapter> adapters,
 			int fetchSize, IsolationLevel isolation, boolean readOnly, int nullType, boolean rewrapExceptions) {
@@ -67,20 +65,23 @@ class JdbCaesarImpl implements JdbCaesar, QueryExecutor {
 	}
 	
 	@Override
-	public InitialQueryBuilder query(String statement) {
-		return new InitialQueryBuilderImpl(adapters, this, statement, fetchSize, readOnly);
+	public InitialSingleQueryBuilder query(String statement) {
+		return new InitialSingleQueryBuilderImpl(adapters, this, statement, fetchSize, isolation, readOnly);
 	}
 	
 	@Override
 	public InitialTransactionBuilder transaction() {
-		return new InitialTransactionBuilderImpl(this);
+		return new InitialTransactionBuilderImpl(this, isolation, readOnly);
 	}
 	
 	@Override
 	public void execute(ConnectionAcceptor acceptor) {
-		boolean readOnly = acceptor.initialBuilder.readOnly;
+		InitialSingleQueryBuilderImpl isqbi = (InitialSingleQueryBuilderImpl) acceptor.initialBuilder;
+		int isolationLevel = isqbi.settings.isolation.getLevel();
+		boolean readOnly = isqbi.settings.readOnly;
+
 		try (Connection conn = connectionSource.getConnection()) {
-			conn.setTransactionIsolation(isolation.getLevel());
+			conn.setTransactionIsolation(isolationLevel);
 			conn.setReadOnly(readOnly);
 			try {
 				acceptor.acceptConnection(conn);

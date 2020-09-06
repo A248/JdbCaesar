@@ -27,7 +27,7 @@ class SingleResultBuilderImpl<R> extends AbstractQueryResultBuilder<R> implement
 
 	private final ResultSingleMapper<R> mapper;
 	
-	SingleResultBuilderImpl(InitialQueryBuilderImpl initialBuilder, ResultSingleMapper<R> mapper) {
+	SingleResultBuilderImpl(InitialQueryBuilderImpl<?> initialBuilder, ResultSingleMapper<R> mapper) {
 		super(initialBuilder);
 		this.mapper = mapper;
 	}

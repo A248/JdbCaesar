@@ -26,7 +26,7 @@ class UpdateCountResultBuilderImpl<R> extends AbstractQueryResultBuilder<R> {
 
 	private final UpdateCountMapper<R> mapper;
 	
-	UpdateCountResultBuilderImpl(InitialQueryBuilderImpl initialBuilder, UpdateCountMapper<R> mapper) {
+	UpdateCountResultBuilderImpl(InitialQueryBuilderImpl<?> initialBuilder, UpdateCountMapper<R> mapper) {
 		super(initialBuilder);
 		this.mapper = mapper;
 	}

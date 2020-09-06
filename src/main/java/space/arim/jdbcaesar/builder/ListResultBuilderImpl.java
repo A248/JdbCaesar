@@ -30,7 +30,7 @@ class ListResultBuilderImpl<E> extends AbstractQueryResultBuilder<List<E>> imple
 
 	private final ResultElementMapper<E> mapper;
 	
-	ListResultBuilderImpl(InitialQueryBuilderImpl initialBuilder, ResultElementMapper<E> mapper) {
+	ListResultBuilderImpl(InitialQueryBuilderImpl<?> initialBuilder, ResultElementMapper<E> mapper) {
 		super(initialBuilder);
 		this.mapper = mapper;
 	}

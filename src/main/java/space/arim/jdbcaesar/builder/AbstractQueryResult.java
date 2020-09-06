@@ -31,7 +31,7 @@ abstract class AbstractQueryResult<R> extends ConnectionAcceptor implements Quer
 	
 	private R result;
 	
-	AbstractQueryResult(InitialQueryBuilderImpl initialBuilder, SubstituteProvider<R> onError) {
+	AbstractQueryResult(InitialQueryBuilderImpl<?> initialBuilder, SubstituteProvider<R> onError) {
 		super(initialBuilder);
 		this.onError = onError;
 	}
@@ -39,6 +39,7 @@ abstract class AbstractQueryResult<R> extends ConnectionAcceptor implements Quer
 	@Override
 	void acceptConnection(Connection conn) throws SQLException {
 		R result;
+		InitialQueryBuilderImpl<?> initialBuilder = this.initialBuilder;
 		int fetchSize = initialBuilder.fetchSize;
 
 		try (PreparedStatement prepStmt = prepareStatement(conn)) {

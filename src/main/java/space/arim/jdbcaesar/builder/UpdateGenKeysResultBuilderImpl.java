@@ -26,7 +26,7 @@ class UpdateGenKeysResultBuilderImpl<R> extends AbstractQueryResultBuilder<R> {
 
 	private final UpdateGenKeysMapper<R> mapper;
 	
-	UpdateGenKeysResultBuilderImpl(InitialQueryBuilderImpl initialBuilder, UpdateGenKeysMapper<R> mapper) {
+	UpdateGenKeysResultBuilderImpl(InitialQueryBuilderImpl<?> initialBuilder, UpdateGenKeysMapper<R> mapper) {
 		super(initialBuilder);
 		this.mapper = mapper;
 	}

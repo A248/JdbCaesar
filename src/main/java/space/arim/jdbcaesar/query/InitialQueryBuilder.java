@@ -23,25 +23,25 @@ import space.arim.jdbcaesar.mapper.ResultElementMapper;
 import space.arim.jdbcaesar.mapper.ResultSingleMapper;
 import space.arim.jdbcaesar.mapper.UpdateCountMapper;
 import space.arim.jdbcaesar.mapper.UpdateGenKeysMapper;
-import space.arim.jdbcaesar.transact.InitialTransactionBuilder;
 
 /**
- * Initial builder from which more specific queries may be created.
+ * Initial builder of queries used to specify the query parameters, from which more specific queries may be created
  * 
  * @author A248
  *
+ * @param <B> the intermediate builder type
  */
-public interface InitialQueryBuilder {
+public interface InitialQueryBuilder<B extends InitialQueryBuilder<B>> {
 
 	/**
-	 * Sets the parameters of this initial builder to the specified ones (optional operation). <br>
+	 * Sets the parameters of the query to be executed to the specified ones (optional operation). <br>
 	 * This is the equivalent of {@link java.sql.PreparedStatement#setObject(int, Object)} and
 	 * variants thereof.
 	 * 
 	 * @param params the parameters
-	 * @return this builder
+	 * @return the intermediate builder
 	 */
-	InitialQueryBuilder params(Object...params);
+	B params(Object...params);
 	
 	/**
 	 * Sets the fetch size of this initial builder to the specified one (optional operation). <br>
@@ -51,7 +51,7 @@ public interface InitialQueryBuilder {
 	 * @param fetchSize the fetch size
 	 * @return this builder
 	 */
-	InitialQueryBuilder fetchSize(int fetchSize);
+	B fetchSize(int fetchSize);
 	
 	/**
 	 * Sets the result set type of the statement to be executed to the specified result set type.
@@ -63,7 +63,7 @@ public interface InitialQueryBuilder {
 	 * @param resultSetType the result set type
 	 * @return this builder
 	 */
-	InitialQueryBuilder resultSetType(ResultSetType resultSetType);
+	B resultSetType(ResultSetType resultSetType);
 	
 	/**
 	 * Sets the result set concurrency of the statement to be executed to the specified concurrency.
@@ -75,18 +75,7 @@ public interface InitialQueryBuilder {
 	 * @param concurrency the result set concurrency
 	 * @return this builder
 	 */
-	InitialQueryBuilder resultSetConcurrency(ResultSetConcurrency concurrency);
-	
-	/**
-	 * Whether to set this query in read only mode. Has no effect within a transaction;
-	 * to set the read only mode of a transaction, use {@link InitialTransactionBuilder#readOnly(boolean)} <br>
-	 * <br>
-	 * This is the equivalent of {@link java.sql.Connection#setReadOnly(boolean)}
-	 * 
-	 * @param readOnly a hint to the driver that the query is read only
-	 * @return this builder
-	 */
-	InitialQueryBuilder readOnly(boolean readOnly);
+	B resultSetConcurrency(ResultSetConcurrency concurrency);
 	
 	/**
 	 * Maps to a single object from a result set. <br>

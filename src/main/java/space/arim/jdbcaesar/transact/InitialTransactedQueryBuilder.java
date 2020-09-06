@@ -16,28 +16,16 @@
  * along with JdbCaesar. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU Lesser General Public License.
  */
-package space.arim.jdbcaesar.builder;
+package space.arim.jdbcaesar.transact;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Arrays;
+import space.arim.jdbcaesar.query.InitialQueryBuilder;
 
-abstract class ConnectionAcceptor {
-	
-	final InitialQueryBuilderImpl<?> initialBuilder;
-	
-	ConnectionAcceptor(InitialQueryBuilderImpl<?> initialBuilder) {
-		this.initialBuilder = initialBuilder;
-	}
+/**
+ * Initial builder of queries within a transaction
+ * 
+ * @author A248
+ *
+ */
+public interface InitialTransactedQueryBuilder extends InitialQueryBuilder<InitialTransactedQueryBuilder> {
 
-	abstract void acceptConnection(Connection conn) throws SQLException;
-	
-	abstract void onError();
-	
-	SQLException rewrapExceptionWithDetails(SQLException ex) {
-		return new SQLException(
-				"For statement [" + initialBuilder.statement + "], parameters " + Arrays.deepToString(initialBuilder.params),
-				ex);
-	}
-	
 }

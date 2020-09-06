@@ -18,21 +18,37 @@
  */
 package space.arim.jdbcaesar.transact;
 
+import java.sql.Connection;
+
 /**
- * Initial builder for specifying transaction properties
+ * Base builder of transaction settings
  * 
  * @author A248
  *
+ * @param <B> the builder type
  */
-public interface InitialTransactionBuilder extends TransactionSettingsBuilder<InitialTransactionBuilder> {
+public interface TransactionSettingsBuilder<B extends TransactionSettingsBuilder<B>> {
+
+	/**
+	 * Sets the isolation level of the transaction to the specified one (optional operation).
+	 * If unspecified, uses the global transaction isolation. <br>
+	 * <br>
+	 * This is the equivalent of {@link Connection#setTransactionIsolation(int)}
+	 * 
+	 * @param isolation the transaction isolation level
+	 * @return this builder
+	 */
+	B isolation(IsolationLevel isolation);
 	
 	/**
-	 * Sets the body of this transaction to the specified {@link Transactor}
+	 * Sets whether this transaction is read only (optional operation). If unspecified,
+	 * uses the global read only setting. <br>
+	 * <br>
+	 * This is the equivalent of {@link Connection#setReadOnly(boolean)}
 	 * 
-	 * @param <T> the result type of the whole transaction
-	 * @param transactor the main body of the transaction
-	 * @return a transaction builder
+	 * @param readOnly whether the transaction is read only
+	 * @return this builder
 	 */
-	<T> TransactionBuilder<T> transactor(Transactor<T> transactor);
+	B readOnly(boolean readOnly);
 	
 }

@@ -31,7 +31,7 @@ class SetResultImpl<E> extends AbstractResultedQueryResult<Set<E>> implements Se
 
 	private final ResultElementMapper<E> mapper;
 	
-	SetResultImpl(InitialQueryBuilderImpl initialBuilder, ResultElementMapper<E> mapper, SubstituteProvider<Set<E>> onError) {
+	SetResultImpl(InitialQueryBuilderImpl<?> initialBuilder, ResultElementMapper<E> mapper, SubstituteProvider<Set<E>> onError) {
 		super(initialBuilder, onError);
 		this.mapper = mapper;
 	}

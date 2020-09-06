@@ -30,7 +30,7 @@ class SetResultBuilderImpl<E> extends AbstractQueryResultBuilder<Set<E>> impleme
 
 	private final ResultElementMapper<E> mapper;
 	
-	SetResultBuilderImpl(InitialQueryBuilderImpl initialBuilder, ResultElementMapper<E> mapper) {
+	SetResultBuilderImpl(InitialQueryBuilderImpl<?> initialBuilder, ResultElementMapper<E> mapper) {
 		super(initialBuilder);
 		this.mapper = mapper;
 	}

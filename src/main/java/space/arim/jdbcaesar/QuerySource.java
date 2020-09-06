@@ -25,8 +25,9 @@ import space.arim.jdbcaesar.query.InitialQueryBuilder;
  * 
  * @author A248
  *
+ * @param <B> the query builder type
  */
-public interface QuerySource {
+public interface QuerySource<B extends InitialQueryBuilder<B>> {
 
 	/**
 	 * Begins creating a query
@@ -34,6 +35,6 @@ public interface QuerySource {
 	 * @param statement the query statement string
 	 * @return an initial query builder
 	 */
-	InitialQueryBuilder query(String statement);
+	B query(String statement);
 	
 }

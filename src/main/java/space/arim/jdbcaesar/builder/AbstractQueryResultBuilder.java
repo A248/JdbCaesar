@@ -22,9 +22,9 @@ import space.arim.jdbcaesar.query.QueryResultBuilder;
 
 abstract class AbstractQueryResultBuilder<R> implements QueryResultBuilder<R> {
 
-	final InitialQueryBuilderImpl initialBuilder;
+	final InitialQueryBuilderImpl<?> initialBuilder;
 	
-	AbstractQueryResultBuilder(InitialQueryBuilderImpl initialBuilder) {
+	AbstractQueryResultBuilder(InitialQueryBuilderImpl<?> initialBuilder) {
 		this.initialBuilder = initialBuilder;
 	}
 	

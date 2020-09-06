@@ -23,7 +23,7 @@ import java.sql.SQLException;
 
 import space.arim.jdbcaesar.error.SQLTransactionEncounteredRuntimeException;
 import space.arim.jdbcaesar.error.SubstituteProvider;
-import space.arim.jdbcaesar.query.InitialQueryBuilder;
+import space.arim.jdbcaesar.transact.InitialTransactedQueryBuilder;
 import space.arim.jdbcaesar.transact.RollMeBackException;
 import space.arim.jdbcaesar.transact.Transaction;
 import space.arim.jdbcaesar.transact.TransactionQuerySource;
@@ -41,10 +41,12 @@ class TransactionImpl<T> implements Transaction<T> {
 	
 	@Override
 	public T execute() {
-		JdbCaesarImpl jdbCaesar = transactionBuilder.jdbCaesar;
-		int isolationLevel = transactionBuilder.isolation;
-		boolean readOnly = transactionBuilder.readOnly;
+		InitialTransactionBuilderImpl initialBuilder = transactionBuilder.initialBuilder;
+		JdbCaesarImpl jdbCaesar = initialBuilder.jdbCaesar;
+		int isolationLevel = initialBuilder.settings.isolation.getLevel();
+		boolean readOnly = initialBuilder.settings.readOnly;
 		Transactor<T> transactor = transactionBuilder.transactor;
+
 		T result;
 		try (Connection connection = jdbCaesar.getConnectionSource().getConnection()) {
 			connection.setTransactionIsolation(isolationLevel);
@@ -72,7 +74,7 @@ class TransactionImpl<T> implements Transaction<T> {
 
 }
 
-class TransactionQuerySourceImpl implements TransactionQuerySource, QueryExecutor {
+class TransactionQuerySourceImpl implements TransactionQuerySource, QueryExecutor<InitialTransactedQueryBuilder> {
 	
 	private final Connection connection;
 	final JdbCaesarImpl jdbCaesar;
@@ -83,8 +85,8 @@ class TransactionQuerySourceImpl implements TransactionQuerySource, QueryExecuto
 	}
 	
 	@Override
-	public InitialQueryBuilder query(String statement) {
-		return new InitialQueryBuilderImpl(jdbCaesar.adapters, this, statement, jdbCaesar.fetchSize, jdbCaesar.readOnly);
+	public InitialTransactedQueryBuilder query(String statement) {
+		return new InitialTransactedQueryBuilderImpl(jdbCaesar.adapters, this, statement, jdbCaesar.fetchSize);
 	}
 
 	@Override

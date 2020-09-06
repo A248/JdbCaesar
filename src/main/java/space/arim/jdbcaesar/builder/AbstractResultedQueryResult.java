@@ -27,7 +27,7 @@ import space.arim.jdbcaesar.error.SubstituteProvider;
 
 abstract class AbstractResultedQueryResult<R> extends AbstractQueryResult<R> {
 
-	AbstractResultedQueryResult(InitialQueryBuilderImpl initialBuilder, SubstituteProvider<R> onError) {
+	AbstractResultedQueryResult(InitialQueryBuilderImpl<?> initialBuilder, SubstituteProvider<R> onError) {
 		super(initialBuilder, onError);
 	}
 	
@@ -44,7 +44,7 @@ abstract class AbstractResultedQueryResult<R> extends AbstractQueryResult<R> {
 	
 	@Override
 	PreparedStatement prepareStatement(Connection conn) throws SQLException {
-		InitialQueryBuilderImpl initialBuilder = this.initialBuilder;
+		InitialQueryBuilderImpl<?> initialBuilder = this.initialBuilder;
 		return conn.prepareStatement(initialBuilder.statement,
 				initialBuilder.type.getType(), initialBuilder.concurrency.getConcurrency());
 	}
