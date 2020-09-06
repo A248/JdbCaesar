@@ -40,7 +40,7 @@ public interface UpdateGenKeysMapper<T> {
 	 * By default, if the query did not produce an update coumt, a {@link SQLNoUpdateCountException} will be thrown
 	 * to cancel the query or transaction and this mapper will not be invoked. <br>
 	 * However, if {@link #allowNonUpdateCount()} = {@code true}, and the query did not produce an update count,
-	 * then {@code updateCount} will be {@code -1} and {@code genKeys} {@code null}.
+	 * then {@code updateCount} will be {@code -1}
 	 * 
 	 * @param updateCount the update count or possibly {@code -1} if {@link #allowNonUpdateCount()} is {@code true}
 	 * @param genKeys any generated keys or an empty result set if none were generated
