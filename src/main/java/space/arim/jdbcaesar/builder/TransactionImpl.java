@@ -49,6 +49,7 @@ class TransactionImpl<T> implements Transaction<T> {
 
 		T result;
 		try (Connection connection = jdbCaesar.getConnectionSource().getConnection()) {
+			connection.setAutoCommit(false);
 			connection.setTransactionIsolation(isolationLevel);
 			connection.setReadOnly(readOnly);
 			try {

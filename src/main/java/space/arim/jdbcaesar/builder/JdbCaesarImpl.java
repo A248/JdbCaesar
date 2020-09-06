@@ -81,6 +81,7 @@ class JdbCaesarImpl implements JdbCaesar, QueryExecutor<InitialSingleQueryBuilde
 		boolean readOnly = isqbi.settings.readOnly;
 
 		try (Connection conn = connectionSource.getConnection()) {
+			conn.setAutoCommit(false);
 			conn.setTransactionIsolation(isolationLevel);
 			conn.setReadOnly(readOnly);
 			try {
