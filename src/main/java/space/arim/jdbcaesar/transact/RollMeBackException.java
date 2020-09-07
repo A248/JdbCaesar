@@ -21,15 +21,18 @@ package space.arim.jdbcaesar.transact;
 import java.sql.SQLException;
 
 /**
- * Unchecked exception which may be thrown from inside of transactions to rollback the entire
- * transaction. <br>
+ * Unchecked exception which may be thrown from inside of transactions (per {@link Transactor#transact(TransactionQuerySource)}
+ * to rollback the entire transaction. <br>
  * <br>
  * This exception is used for control flow processing. It is not intended to be caught except
  * by JdbCaesar. To enhance performance, it has no stacktrace.
  * 
  * @author A248
  *
+ * @deprecated This is no longer the way transactions are rolled back. Instead, {@link TransactionBody}
+ * should be used in order to access a {@link TransactionController}
  */
+@Deprecated
 public class RollMeBackException extends RuntimeException {
 
 	/**

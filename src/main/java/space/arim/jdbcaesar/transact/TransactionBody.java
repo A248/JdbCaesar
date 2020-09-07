@@ -26,24 +26,24 @@ import java.sql.SQLException;
  * @author A248
  *
  * @param <T> the result type of the whole transaction
- * @deprecated Use {@link TransactionBody} with its improved capabilities
  */
-@Deprecated
 @FunctionalInterface
-public interface Transactor<T> {
+public interface TransactionBody<T> {
 
 	/**
-	 * Completes the transaction. All queries should be executed using
-	 * the given {@link TransactionQuerySource}. <br>
+	 * Completes the transaction. All queries should be executed using the given {@link TransactionQuerySource}. <br>
+	 * <br>
+	 * The {@link TransactionController} may be used to control rollbacks and savepoints. The transaction is committed
+	 * once this method returns normally. <br>
 	 * <br>
 	 * If any query run within the transaction encounters a {@link SQLException}, the transaction will be rolled back
 	 * and the global error handler invoked. <br>
-	 * If a {@code RollMeBackException} is thrown, the transaction will be rolled back but the error handler not invoked.
 	 * 
-	 * @param source the query source which should be used
+	 * @param querySource the query source which should be used
+	 * @param controller the transaction controller used to rollback
 	 * @return the result of the entire transaction
-	 * @throws RollMeBackException an unchecked exception used to rollback the transaction
+	 * @throws SQLException generally, per JDBC
 	 */
-	T transact(TransactionQuerySource source);
+	T transact(TransactionQuerySource querySource, TransactionController controller) throws SQLException;
 	
 }

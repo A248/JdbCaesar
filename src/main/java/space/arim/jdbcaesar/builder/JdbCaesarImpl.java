@@ -87,8 +87,10 @@ class JdbCaesarImpl implements JdbCaesar, QueryExecutor<InitialSingleQueryBuilde
 			try {
 				acceptor.acceptConnection(conn);
 				conn.commit();
-			} catch (SQLException ex) {
-				conn.rollback();
+			} catch (RuntimeException | SQLException ex) {
+				try {
+					conn.rollback();
+				} catch (SQLException suppressed) { ex.addSuppressed(suppressed); }
 				throw ex;
 			}
 		} catch (SQLException ex) {

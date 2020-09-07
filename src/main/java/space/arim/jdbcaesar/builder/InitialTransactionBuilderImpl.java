@@ -20,8 +20,8 @@ package space.arim.jdbcaesar.builder;
 
 import space.arim.jdbcaesar.transact.InitialTransactionBuilder;
 import space.arim.jdbcaesar.transact.IsolationLevel;
+import space.arim.jdbcaesar.transact.TransactionBody;
 import space.arim.jdbcaesar.transact.TransactionBuilder;
-import space.arim.jdbcaesar.transact.Transactor;
 
 class InitialTransactionBuilderImpl implements InitialTransactionBuilder {
 
@@ -45,9 +45,16 @@ class InitialTransactionBuilderImpl implements InitialTransactionBuilder {
 		return this;
 	}
 	
+	@SuppressWarnings("deprecation")
+	@Deprecated
 	@Override
-	public <T> TransactionBuilder<T> transactor(Transactor<T> transactor) {
-		return new TransactionBuilderImpl<>(this, transactor);
+	public <T> TransactionBuilder<T> transactor(space.arim.jdbcaesar.transact.Transactor<T> transactor) {
+		return body((querySource, controller) -> transactor.transact(querySource));
+	}
+
+	@Override
+	public <T> TransactionBuilder<T> body(TransactionBody<T> body) {
+		return new TransactionBuilderImpl<>(this, body);
 	}
 	
 }

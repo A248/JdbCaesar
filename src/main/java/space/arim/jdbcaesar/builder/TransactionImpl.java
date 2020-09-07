@@ -20,23 +20,23 @@ package space.arim.jdbcaesar.builder;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Savepoint;
 
-import space.arim.jdbcaesar.error.SQLTransactionEncounteredRuntimeException;
 import space.arim.jdbcaesar.error.SubstituteProvider;
 import space.arim.jdbcaesar.transact.InitialTransactedQueryBuilder;
-import space.arim.jdbcaesar.transact.RollMeBackException;
 import space.arim.jdbcaesar.transact.Transaction;
+import space.arim.jdbcaesar.transact.TransactionBody;
+import space.arim.jdbcaesar.transact.TransactionController;
 import space.arim.jdbcaesar.transact.TransactionQuerySource;
-import space.arim.jdbcaesar.transact.Transactor;
 
 class TransactionImpl<T> implements Transaction<T> {
 	
 	private final TransactionBuilderImpl<T> transactionBuilder;
-	private final SubstituteProvider<T> onRollback;
+	private final SubstituteProvider<T> onError;
 	
-	TransactionImpl(TransactionBuilderImpl<T> transactionBuilder, SubstituteProvider<T> onRollback) {
+	TransactionImpl(TransactionBuilderImpl<T> transactionBuilder, SubstituteProvider<T> onError) {
 		this.transactionBuilder = transactionBuilder;
-		this.onRollback = onRollback;
+		this.onError = onError;
 	}
 	
 	@Override
@@ -45,7 +45,7 @@ class TransactionImpl<T> implements Transaction<T> {
 		JdbCaesarImpl jdbCaesar = initialBuilder.jdbCaesar;
 		int isolationLevel = initialBuilder.settings.isolation.getLevel();
 		boolean readOnly = initialBuilder.settings.readOnly;
-		Transactor<T> transactor = transactionBuilder.transactor;
+		TransactionBody<T> body = transactionBuilder.body;
 
 		T result;
 		try (Connection connection = jdbCaesar.getConnectionSource().getConnection()) {
@@ -53,32 +53,34 @@ class TransactionImpl<T> implements Transaction<T> {
 			connection.setTransactionIsolation(isolationLevel);
 			connection.setReadOnly(readOnly);
 			try {
-				TransactionQuerySource source = new TransactionQuerySourceImpl(connection, jdbCaesar);
-				result = transactor.transact(source);
+				TransactionQuerySourceImpl sourceAndController = new TransactionQuerySourceImpl(connection, jdbCaesar);
+				result = body.transact(sourceAndController, sourceAndController);
 				connection.commit();
 
-			} catch (RollMeBackException ex) {
+			} catch (@SuppressWarnings("deprecation") space.arim.jdbcaesar.transact.RollMeBackException
+					| InternalRollbackException ex) {
 				connection.rollback();
-				result = onRollback.getSubstituteValue();
+				result = onError.getSubstituteValue();
 
-			} catch (RuntimeException ex) {
-				connection.rollback();
-				jdbCaesar.getExceptionHandler().handleException(new SQLTransactionEncounteredRuntimeException(ex));
-				result = onRollback.getSubstituteValue();
+			} catch (SQLException | RuntimeException ex) {
+				try {
+					connection.rollback();
+				} catch (SQLException suppressed) { ex.addSuppressed(suppressed); }
+				throw ex;
 			}
 		} catch (SQLException ex) {
 			jdbCaesar.getExceptionHandler().handleException(ex);
-			result = onRollback.getSubstituteValue();
+			result = onError.getSubstituteValue();
 		}
 		return result;
 	}
 
 }
 
-class TransactionQuerySourceImpl implements TransactionQuerySource, QueryExecutor<InitialTransactedQueryBuilder> {
+class TransactionQuerySourceImpl implements TransactionQuerySource, TransactionController, QueryExecutor<InitialTransactedQueryBuilder> {
 	
 	private final Connection connection;
-	final JdbCaesarImpl jdbCaesar;
+	private final JdbCaesarImpl jdbCaesar;
 	
 	TransactionQuerySourceImpl(Connection connection, JdbCaesarImpl jdbCaesar) {
 		this.connection = connection;
@@ -99,7 +101,7 @@ class TransactionQuerySourceImpl implements TransactionQuerySource, QueryExecuto
 				ex = acceptor.rewrapExceptionWithDetails(ex);
 			}
 			jdbCaesar.getExceptionHandler().handleException(ex);
-			throw new RollMeBackException(ex);
+			throw InternalRollbackException.INSTANCE;
 		}
 	}
 
@@ -107,4 +109,30 @@ class TransactionQuerySourceImpl implements TransactionQuerySource, QueryExecuto
 	public int nullType() {
 		return jdbCaesar.nullType;
 	}
+	
+	@Override
+	public Savepoint savepoint() throws SQLException {
+		return connection.setSavepoint();
+	}
+	
+	@Override
+	public Savepoint savepoint(String name) throws SQLException {
+		return connection.setSavepoint(name);
+	}
+	
+	@Override
+	public void release(Savepoint savepoint) throws SQLException {
+		connection.releaseSavepoint(savepoint);
+	}
+
+	@Override
+	public void rollbackTo(Savepoint savepoint) throws SQLException {
+		connection.rollback(savepoint);
+	}
+
+	@Override
+	public void rollback() throws SQLException {
+		connection.rollback();
+	}
+
 }

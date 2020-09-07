@@ -32,9 +32,11 @@ public interface ExceptionHandler {
 	/**
 	 * Handles the exception. This may include logging the exception or an exception message. <br>
 	 * <br>
-	 * This method should not itself throw exceptions
+	 * Some implementations may choose to fail fast by propagating an unchecked exception wrapper.
+	 * However, users taking this route should be aware that while it is supported, it may be unclear
+	 * to the caller of {@code execute()} methods which exception will be thrown
 	 * 
-	 * @param exception the exception to handle
+	 * @param exception the SQL exception to handle
 	 */
 	void handleException(SQLException exception);
 	

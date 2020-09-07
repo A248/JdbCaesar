@@ -25,7 +25,10 @@ import java.sql.SQLException;
  * 
  * @author A248
  *
+ * @deprecated This is no longer how unchecked exceptions inside transactions are handled. Rather,
+ * they are propagated to the caller.
  */
+@Deprecated
 public class SQLTransactionEncounteredRuntimeException extends SQLException {
 
 	/**

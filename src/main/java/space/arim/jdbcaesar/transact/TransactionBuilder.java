@@ -18,6 +18,8 @@
  */
 package space.arim.jdbcaesar.transact;
 
+import java.sql.SQLException;
+
 import space.arim.jdbcaesar.error.SubstituteProvider;
 
 /**
@@ -30,11 +32,24 @@ import space.arim.jdbcaesar.error.SubstituteProvider;
 public interface TransactionBuilder<T> {
 
 	/**
-	 * Sets the supplier to return the specified value on rollback of the transaction
+	 * Sets the substitute provider and returns an executable {@link Transaction}. Should a {@link SQLException}
+	 * occur while executing this query, the transaction is rolled back and the error substitute provider is invoked.
 	 * 
-	 * @param onRollback the substitute provider to be invoked in case of rollback
+	 * @param onError the substitute provider to be invoked in case of error
 	 * @return an executable transaction
 	 */
-	Transaction<T> onRollback(SubstituteProvider<T> onRollback);
+	Transaction<T> onError(SubstituteProvider<T> onError);
+	
+	/**
+	 * Old version of {@code #onError(SubstituteProvider)}, but with a misleading name.
+	 * 
+	 * @param onError the substitute provider to be invoked in case of error
+	 * @return an executable transaction
+	 * @deprecated Prefer {@link #onError(SubstituteProvider)}
+	 */
+	@Deprecated
+	default Transaction<T> onRollback(SubstituteProvider<T> onError) {
+		return onError(onError);
+	}
 	
 }

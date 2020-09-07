@@ -16,23 +16,31 @@
  * along with JdbCaesar. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU Lesser General Public License.
  */
-package space.arim.jdbcaesar.error;
+package space.arim.jdbcaesar.builder;
 
 /**
- * The supplier of some default value should an error occur
+ * Internal exception used to forcibly rollback the entire transaction should a {@link java.sql.SQLException}
+ * occur
  * 
  * @author A248
  *
  */
-@FunctionalInterface
-public interface SubstituteProvider<T> {
+class InternalRollbackException extends RuntimeException {
 
 	/**
-	 * Gets the value of this substitute provider. This method should be stateless, as it
-	 * may be called multiple times in some edge situations.
-	 * 
-	 * @return the substitute value
+	 * Serial version uid
 	 */
-	T getSubstituteValue();
+	private static final long serialVersionUID = -6641936634527959500L;
+	
+	static final InternalRollbackException INSTANCE = new InternalRollbackException();
+	
+	/**
+	 * Creates the exception singleton, using {@link Throwable#Throwable(String, Throwable, boolean, boolean)}
+	 * (and subclasses' chained constructors) to disable suppression and make the stacktrace non writable.
+	 * 
+	 */
+	private InternalRollbackException() {
+		super(null, null, false, false);
+	}
 	
 }

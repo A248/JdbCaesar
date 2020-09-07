@@ -20,22 +20,22 @@ package space.arim.jdbcaesar.builder;
 
 import space.arim.jdbcaesar.error.SubstituteProvider;
 import space.arim.jdbcaesar.transact.Transaction;
+import space.arim.jdbcaesar.transact.TransactionBody;
 import space.arim.jdbcaesar.transact.TransactionBuilder;
-import space.arim.jdbcaesar.transact.Transactor;
 
 class TransactionBuilderImpl<T> implements TransactionBuilder<T> {
 
 	final InitialTransactionBuilderImpl initialBuilder;
-	final Transactor<T> transactor;
+	final TransactionBody<T> body;
 	
-	TransactionBuilderImpl(InitialTransactionBuilderImpl initialBuilder, Transactor<T> transactor) {
+	TransactionBuilderImpl(InitialTransactionBuilderImpl initialBuilder, TransactionBody<T> body) {
 		this.initialBuilder = initialBuilder;
-		this.transactor = transactor;
+		this.body = body;
 	}
 	
 	@Override
-	public Transaction<T> onRollback(SubstituteProvider<T> onRollback) {
-		return new TransactionImpl<>(this, onRollback);
+	public Transaction<T> onError(SubstituteProvider<T> onError) {
+		return new TransactionImpl<>(this, onError);
 	}
 	
 }

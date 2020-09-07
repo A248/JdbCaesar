@@ -32,7 +32,18 @@ public interface InitialTransactionBuilder extends TransactionSettingsBuilder<In
 	 * @param <T> the result type of the whole transaction
 	 * @param transactor the main body of the transaction
 	 * @return a transaction builder
+	 * @deprecated Use {@link #body(TransactionBody)}, with its improved approach to rolling back
 	 */
+	@Deprecated
 	<T> TransactionBuilder<T> transactor(Transactor<T> transactor);
+	
+	/**
+	 * Sets the body of this transaction to the specified {@link TransactionBody}
+	 * 
+	 * @param <T> the result type of the whole transaction
+	 * @param body the main body of the transaction
+	 * @return a transaction builder
+	 */
+	<T> TransactionBuilder<T> body(TransactionBody<T> body);
 	
 }
