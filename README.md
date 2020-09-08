@@ -151,7 +151,7 @@ A few common settings:
 * Transaction isolation - *REPEATABLE_READ* is the default.
 * Query fetch size - The default fetch size is the vendor default.
 
-**Note that read only mode, auto commit mode, and transaction isolation are not reset once a Connection is used by JdbCaesar**. If you are using a connection pool, it is good practice to resets these options when the connection is returned to the pool. HikariCP, for example, does this automatically.
+**Note that read only mode, auto commit mode, and transaction isolation are not reset once a Connection is used by JdbCaesar**. If you are using a connection pool, it is good practice to reset these options when the connection is returned to the pool. HikariCP, for example, does this automatically.
 
 ### Exception Handling
 
