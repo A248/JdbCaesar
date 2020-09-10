@@ -19,6 +19,7 @@ JdbCaesar is a simple yet effective alternative substantially reducing the amoun
 * Convert custom types to SQL data.
 * Reduce vendor-dependent details.
 * Lightweight library with no dependencies besides JDK 8.
+* Automatic-Module-Name *space.arim.jdbcaesar*
 
 ## Usage
 
