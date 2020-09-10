@@ -26,15 +26,15 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import space.arim.jdbcaesar.JdbCaesar;
+import space.arim.jdbcaesar.QuerySource;
 import space.arim.jdbcaesar.it.JdbCaesarProvider;
-import space.arim.jdbcaesar.transact.TransactionQuerySource;
 
 public class TransactionIT {
 
 	@ParameterizedTest
 	@ArgumentsSource(JdbCaesarProvider.class)
 	public void testTransactions(JdbCaesar jdbCaesar) {
-		Object result = jdbCaesar.transaction().body((querySource, controller) -> {
+		jdbCaesar.transaction().body((querySource, controller) -> {
 			querySource.query(
 					"CREATE TABLE transactions ("
 					+ "someNumber INT NOT NULL)")
@@ -59,11 +59,22 @@ public class TransactionIT {
 
 			assertSomeNumberValue(querySource, 1);
 			return null;
-		}).onError(() -> null).execute();
-		assertNull(result);
+		}).onError(() -> fail("This should never happen")).execute();
+
+		jdbCaesar.transaction().body((querySource, controller) -> {
+			querySource.query("UPDATE transactions SET someNumber = ? WHERE someNumber = ?")
+					.params(15, 1)
+						.voidResult().execute();
+			assertSomeNumberValue(querySource, 15);
+
+			controller.rollback();
+			return null;
+		}).onError(() -> fail("This should never happen")).execute();
+
+		assertSomeNumberValue(jdbCaesar, 1);
 	}
 	
-	private void assertSomeNumberValue(TransactionQuerySource querySource, int expected) {
+	private void assertSomeNumberValue(QuerySource<?> querySource, int expected) {
 		Integer actual = querySource.query(
 				"SELECT someNumber FROM transactions")
 				.singleResult((resultSet) -> resultSet.getInt("someNumber"))
