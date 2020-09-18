@@ -156,63 +156,36 @@ class ConnectionSources {
 		Runtime.getRuntime().addShutdownHook(new Thread(toDo));
 	}
 	
-	static Connection getWithoutAutoCommit(Connection conn) throws SQLException {
-		try {
-			conn.setAutoCommit(false);
-			return conn;
-		} catch (SQLException ex) {
-			conn.close();
-			throw ex;
-		} catch (RuntimeException ex) {
-			conn.close();
-			throw ex;
-		}
-	}
-	
 	private static class SimpleConnectionSource extends IdentifiedConnectionSource {
 
 		private final String jdbcUrl;
 		private final String username;
 		private final String password;
-		private final boolean adjustAutoCommit;
 		private final boolean credentials;
 		
 		SimpleConnectionSource(Vendor vendor, String jdbcUrl, String username, String password) {
-			this(vendor, jdbcUrl, username, password, true, true);
-		}
-		
-		SimpleConnectionSource(Vendor vendor, String jdbcUrl, String username, String password,
-				boolean adjustAutoCommit) {
-			this(vendor, jdbcUrl, username, password, true, adjustAutoCommit);
+			this(vendor, jdbcUrl, username, password, true);
 		}
 		
 		SimpleConnectionSource(Vendor vendor, String jdbcUrl) {
-			this(vendor, jdbcUrl, null, null, false, true);
+			this(vendor, jdbcUrl, null, null, false);
 		}
 		
 		private SimpleConnectionSource(Vendor vendor, String jdbcUrl, String username, String password,
-				boolean credentials, boolean adjustAutoCommit) {
+				boolean credentials) {
 			super(vendor);
 			this.jdbcUrl = jdbcUrl;
 			this.username = username;
 			this.password = password;
 			this.credentials = credentials;
-			this.adjustAutoCommit = adjustAutoCommit;
 		}
 		
-		@SuppressWarnings("resource")
 		@Override
 		public Connection getConnection() throws SQLException {
-			Connection conn;
 			if (credentials) {
-				conn = DriverManager.getConnection(jdbcUrl, username, password);
+				return DriverManager.getConnection(jdbcUrl, username, password);
 			} else {
-				conn = DriverManager.getConnection(jdbcUrl);
-			}
-			if (adjustAutoCommit) {
-				return getWithoutAutoCommit(conn);
-			} else {
-				return conn;
+				return DriverManager.getConnection(jdbcUrl);
 			}
 		}
 
