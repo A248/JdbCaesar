@@ -19,36 +19,45 @@
 package space.arim.jdbcaesar.error;
 
 import java.sql.SQLException;
-
-import space.arim.jdbcaesar.ExecutableSQL;
+import java.util.Objects;
 
 /**
- * An exception handler of {@link SQLException}s
+ * Unchecked wrapper for {@link SQLException}s
  * 
  * @author A248
  *
  */
-@FunctionalInterface
-public interface ExceptionHandler {
+public class UncheckedSQLException extends RuntimeException {
 
 	/**
-	 * The default implementation rethrows the {@code SQLException} wrapped in {@code UncheckedSQLException}.
-	 * Note that this behaviour therefore makes {@link ExecutableSQL#executeOrGet(SubstituteProvider)}
-	 * equivalent to {@link ExecutableSQL#execute()}
-	 * 
+	 * Serial version uid
 	 */
-	ExceptionHandler DEFAULT = new ExceptionHandler() {
-		@Override
-		public void handleException(SQLException ex) {
-			throw new UncheckedSQLException(ex);
-		}
-	};
+	private static final long serialVersionUID = 4088813370123105349L;
 	
 	/**
-	 * Handles the exception. This often includes logging the exception
+	 * Creates from an exception cause
 	 * 
-	 * @param ex the SQL exception to handle
+	 * @param cause the cause
+	 * @throws NullPointerException if {@code cause} is null
 	 */
-	void handleException(SQLException ex);
+	public UncheckedSQLException(SQLException cause) {
+		super(Objects.requireNonNull(cause, "cause"));
+	}
 	
+	/**
+	 * Creates from a message and a cause
+	 * 
+	 * @param message the message
+	 * @param cause the cause
+	 * @throws NullPointerException if {@code cause} is null
+	 */
+	public UncheckedSQLException(String message, SQLException cause) {
+		super(message, Objects.requireNonNull(cause, "cause"));
+	}
+	
+	@Override
+	public synchronized SQLException getCause() {
+		return (SQLException) super.getCause();
+	}
+
 }

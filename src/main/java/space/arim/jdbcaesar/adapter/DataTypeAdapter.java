@@ -20,15 +20,15 @@ package space.arim.jdbcaesar.adapter;
 
 import java.sql.PreparedStatement;
 
-import space.arim.jdbcaesar.query.InitialQueryBuilder;
+import space.arim.jdbcaesar.query.QueryBuilder;
 
 /**
  * An adapter to simplify converting Java objects to data in the database. <br>
  * <br>
- * Data type adapters are responsible for adapting the objects passed to {@link InitialQueryBuilder#params(Object...)}
+ * Data type adapters are responsible for adapting the objects passed to {@link QueryBuilder#params(Object...)}
  * to the object which will be passed to the database via {@link PreparedStatement#setObject(int, Object)}. <br>
  * <br>
- * For each parameter passed to {@link InitialQueryBuilder#params(Object...)}, the adapters configured
+ * For each parameter passed to {@link QueryBuilder#params(Object...)}, the adapters configured
  * in the construction of JdbCaesar are called sequentially. As soon as the object returned by an adapter
  * is not referentially equal to the original object passed to the adapter, no more adapters are invoked
  * and the result of the adapter is used in {@link PreparedStatement#setObject(int, Object)}. <br>
@@ -46,7 +46,7 @@ import space.arim.jdbcaesar.query.InitialQueryBuilder;
 public interface DataTypeAdapter {
 
 	/**
-	 * Adapts an object passed to {@link InitialQueryBuilder#params(Object...)} to the object
+	 * Adapts an object passed to {@link QueryBuilder#params(Object...)} to the object
 	 * which will be passed to {@link PreparedStatement#setObject(int, Object)}. <br>
 	 * <br>
 	 * See the class javadoc for the established approach for implementing this method.

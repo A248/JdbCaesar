@@ -25,10 +25,10 @@ import java.sql.SQLException;
  * 
  * @author A248
  *
- * @param <T> the result type of the whole transaction
+ * @param <R> the result type of the whole transaction
  */
 @FunctionalInterface
-public interface TransactionBody<T> {
+public interface TransactionBody<R> {
 
 	/**
 	 * Completes the transaction. All queries should be executed using the given {@link TransactionQuerySource}. <br>
@@ -37,13 +37,13 @@ public interface TransactionBody<T> {
 	 * once this method returns normally. <br>
 	 * <br>
 	 * If any query run within the transaction encounters a {@link SQLException}, the transaction will be rolled back
-	 * and the global error handler invoked. <br>
+	 * and the global error handler invoked.
 	 * 
 	 * @param querySource the query source which should be used
 	 * @param controller the transaction controller used to rollback
 	 * @return the result of the entire transaction
-	 * @throws SQLException generally, per JDBC
+	 * @throws SQLException if thrown from the transaction controller
 	 */
-	T transact(TransactionQuerySource querySource, TransactionController controller) throws SQLException;
+	R transact(TransactionQuerySource querySource, TransactionController controller) throws SQLException;
 	
 }

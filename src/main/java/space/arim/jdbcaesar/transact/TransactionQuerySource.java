@@ -21,12 +21,11 @@ package space.arim.jdbcaesar.transact;
 import space.arim.jdbcaesar.QuerySource;
 
 /**
- * A {@link QuerySource} to be used by a single transaction within the body of
- * {@link Transactor#transact(TransactionQuerySource)}.
+ * A {@link QuerySource} to be used by a single transaction within the transaction body
  * 
  * @author A248
  *
  */
-public interface TransactionQuerySource extends QuerySource<InitialTransactedQueryBuilder> {
+public interface TransactionQuerySource extends QuerySource<TransactionQueryBuilder> {
 
 }

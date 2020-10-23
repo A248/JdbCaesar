@@ -52,7 +52,7 @@ public class SingleResultIT {
 		PretendPOJO result = jdbCaesar.query(
 				"SELECT * FROM single_res")
 				.singleResult((rs) -> new PretendPOJO(rs.getInt("integer_value"), rs.getString("string_value")))
-				.onError(() -> null).execute();
+				.execute();
 		assertNotNull(result);
 		assertEquals(integer, result.integer());
 		assertEquals(string, result.string());

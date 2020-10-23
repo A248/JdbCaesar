@@ -18,7 +18,7 @@
  */
 package space.arim.jdbcaesar;
 
-import space.arim.jdbcaesar.query.InitialQueryBuilder;
+import space.arim.jdbcaesar.query.QueryBuilder;
 
 /**
  * A source of new queries
@@ -27,7 +27,7 @@ import space.arim.jdbcaesar.query.InitialQueryBuilder;
  *
  * @param <B> the query builder type
  */
-public interface QuerySource<B extends InitialQueryBuilder<B>> {
+public interface QuerySource<B extends QueryBuilder<B>> {
 
 	/**
 	 * Begins creating a query

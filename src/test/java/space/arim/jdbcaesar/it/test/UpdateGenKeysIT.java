@@ -25,7 +25,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import space.arim.jdbcaesar.JdbCaesar;
-import space.arim.jdbcaesar.it.IdentifiedConnectionSource;
+import space.arim.jdbcaesar.it.IdentifiedDataSource;
 import space.arim.jdbcaesar.it.JdbCaesarProvider;
 import space.arim.jdbcaesar.it.Vendor;
 
@@ -34,7 +34,7 @@ public class UpdateGenKeysIT {
 	@ParameterizedTest
 	@ArgumentsSource(JdbCaesarProvider.class)
 	public void testGenKeys(JdbCaesar jdbCaesar) {
-		Vendor vendor = ((IdentifiedConnectionSource) jdbCaesar.getConnectionSource()).vendor();
+		Vendor vendor = ((IdentifiedDataSource) jdbCaesar.getProperties().getDataSource()).vendor();
 		String identity = vendor.getIdentitySpecification();
 		jdbCaesar.query(
 				"CREATE TABLE update_genkeys ("
@@ -47,13 +47,13 @@ public class UpdateGenKeysIT {
 				.params(col2Value)
 				.updateGenKeys((updateCount, genKeys) -> {
 					return (genKeys.next()) ? new UpdateGenKeys(updateCount, genKeys.getInt(1)) : null;
-				}).onError(() -> null).execute();
+				}).execute();
 		assertNotNull(update);
 		assertEquals(1, update.updateCount);
 
 		PretendPOJO pojo = jdbCaesar.query("SELECT * FROM update_genkeys")
 				.singleResult((resultSet) -> new PretendPOJO(resultSet.getInt("col1"), resultSet.getString("col2")))
-				.onError(() -> null).execute();
+				.execute();
 		assertEquals(update.autoIncrId, pojo.integer());
 		assertEquals(col2Value, pojo.string());
 	}

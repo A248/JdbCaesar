@@ -16,31 +16,27 @@
  * along with JdbCaesar. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU Lesser General Public License.
  */
-package space.arim.jdbcaesar.mapper;
+package space.arim.jdbcaesar.it;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import org.junit.jupiter.api.extension.ExtensionContext.Store.CloseableResource;
 
-/**
- * A mapper which maps a row of a result set to a single value
- * 
- * @author A248
- *
- * @param <T> the result type
- */
-@FunctionalInterface
-public interface ResultSingleMapper<T> {
+class ClosableDataSource extends DriverDataSource implements CloseableResource {
+	
+	private final AutoCloseable closable;
+	
+	ClosableDataSource(Vendor vendor, String jdbcUrl, AutoCloseable closable) {
+		super(vendor, jdbcUrl);
+		this.closable = closable;
+	}
+	
+	ClosableDataSource(Vendor vendor, String jdbcUrl, String username, String password, AutoCloseable closable) {
+		super(vendor, jdbcUrl, username, password);
+		this.closable = closable;
+	}
 
-	/**
-	 * Maps a single result from the current row of the specified result set. <br>
-	 * <Br>
-	 * Implementations thus need not call {@literal rs.next()} or other positioning methods
-	 * since the cursor is already positioned on the first row.
-	 * 
-	 * @param resultSet the result set
-	 * @return the single result
-	 * @throws SQLException if thrown from the result set
-	 */
-	T mapValueFrom(ResultSet resultSet) throws SQLException;
+	@Override
+	public void close() throws Exception {
+		closable.close();
+	}
 	
 }

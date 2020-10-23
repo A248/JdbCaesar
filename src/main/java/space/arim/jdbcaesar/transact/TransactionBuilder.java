@@ -18,38 +18,21 @@
  */
 package space.arim.jdbcaesar.transact;
 
-import java.sql.SQLException;
-
-import space.arim.jdbcaesar.error.SubstituteProvider;
-
 /**
- * Intermediate builder of transactions
+ * Builder for specifying transaction details including the transaction body
  * 
  * @author A248
  *
- * @param <T> the result type of the whole transaction
  */
-public interface TransactionBuilder<T> {
-
-	/**
-	 * Sets the substitute provider and returns an executable {@link Transaction}. Should a {@link SQLException}
-	 * occur while executing this query, the transaction is rolled back and the error substitute provider is invoked.
-	 * 
-	 * @param onError the substitute provider to be invoked in case of error
-	 * @return an executable transaction
-	 */
-	Transaction<T> onError(SubstituteProvider<T> onError);
+public interface TransactionBuilder extends TransactionSettingsBuilder<TransactionBuilder> {
 	
 	/**
-	 * Old version of {@code #onError(SubstituteProvider)}, but with a misleading name.
+	 * Sets the body of this transaction to the specified {@link TransactionBody}
 	 * 
-	 * @param onError the substitute provider to be invoked in case of error
-	 * @return an executable transaction
-	 * @deprecated Prefer {@link #onError(SubstituteProvider)}
+	 * @param <T> the result type of the whole transaction
+	 * @param body the main body of the transaction
+	 * @return a transaction builder
 	 */
-	@Deprecated
-	default Transaction<T> onRollback(SubstituteProvider<T> onError) {
-		return onError(onError);
-	}
+	<T> Transaction<T> body(TransactionBody<T> body);
 	
 }

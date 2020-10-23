@@ -16,43 +16,16 @@
  * along with JdbCaesar. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU Lesser General Public License.
  */
-package space.arim.jdbcaesar;
+package space.arim.jdbcaesar.transact;
 
 import space.arim.jdbcaesar.query.QueryBuilder;
-import space.arim.jdbcaesar.query.SingleQueryBuilder;
-import space.arim.jdbcaesar.transact.TransactionBuilder;
 
 /**
- * Main interface for JdbCaesar. <br>
- * <br>
- * This interface is immutable and thread safe. However, {@link QueryBuilder}s and
- * {@link TransactionBuilder}s returned are intended to only be used by a single thread.
+ * Builder of queries within a transaction
  * 
  * @author A248
  *
  */
-public interface JdbCaesar extends QuerySource<SingleQueryBuilder> {
+public interface TransactionQueryBuilder extends QueryBuilder<TransactionQueryBuilder> {
 
-	/**
-	 * Gets the configured properties of this instance. This {@code JdbCaesarProperties}
-	 * implementation is immutable.
-	 * 
-	 * @return the immutable configured properties
-	 */
-	JdbCaesarProperties getProperties();
-	
-	/**
-	 * Begins creating a single query
-	 * 
-	 */
-	@Override
-	SingleQueryBuilder query(String statement);
-	
-	/**
-	 * Begins creating a transaction
-	 * 
-	 * @return an initial transaction builder
-	 */
-	TransactionBuilder transaction();
-	
 }

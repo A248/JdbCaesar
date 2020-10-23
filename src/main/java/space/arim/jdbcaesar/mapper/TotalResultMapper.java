@@ -22,25 +22,23 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * A mapper which maps a row of a result set to a single value
+ * A mapper which maps an entire result set to a result
  * 
  * @author A248
  *
  * @param <T> the result type
  */
 @FunctionalInterface
-public interface ResultSingleMapper<T> {
+public interface TotalResultMapper<T> {
 
 	/**
-	 * Maps a single result from the current row of the specified result set. <br>
-	 * <Br>
-	 * Implementations thus need not call {@literal rs.next()} or other positioning methods
-	 * since the cursor is already positioned on the first row.
+	 * Maps a result from an entire result set. The cursor is initially positioned before
+	 * the first row as if the {@link ResultSet} had been freshly created
 	 * 
 	 * @param resultSet the result set
-	 * @return the single result
+	 * @return the result
 	 * @throws SQLException if thrown from the result set
 	 */
-	T mapValueFrom(ResultSet resultSet) throws SQLException;
+	T mapFrom(ResultSet resultSet) throws SQLException;
 	
 }

@@ -16,31 +16,14 @@
  * along with JdbCaesar. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU Lesser General Public License.
  */
-package space.arim.jdbcaesar.mapper;
+package space.arim.jdbcaesar.internal;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import space.arim.jdbcaesar.QuerySource;
+import space.arim.jdbcaesar.internal.query.ConnectionAcceptor;
+import space.arim.jdbcaesar.query.QueryBuilder;
 
-/**
- * A mapper which maps a row of a result set to a single value
- * 
- * @author A248
- *
- * @param <T> the result type
- */
-@FunctionalInterface
-public interface ResultSingleMapper<T> {
+public interface QueryExecutor<B extends QueryBuilder<B>> extends QuerySource<B> {
 
-	/**
-	 * Maps a single result from the current row of the specified result set. <br>
-	 * <Br>
-	 * Implementations thus need not call {@literal rs.next()} or other positioning methods
-	 * since the cursor is already positioned on the first row.
-	 * 
-	 * @param resultSet the result set
-	 * @return the single result
-	 * @throws SQLException if thrown from the result set
-	 */
-	T mapValueFrom(ResultSet resultSet) throws SQLException;
+	<R> R execute(ConnectionAcceptor<R> acceptor);
 	
 }

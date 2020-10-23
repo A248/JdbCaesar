@@ -16,31 +16,21 @@
  * along with JdbCaesar. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU Lesser General Public License.
  */
-package space.arim.jdbcaesar.mapper;
+package space.arim.jdbcaesar.internal.query;
 
-import java.sql.ResultSet;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-/**
- * A mapper which maps a row of a result set to a single value
- * 
- * @author A248
- *
- * @param <T> the result type
- */
-@FunctionalInterface
-public interface ResultSingleMapper<T> {
+class VoidResultImpl extends AbstractQueryResult<Void> {
 
-	/**
-	 * Maps a single result from the current row of the specified result set. <br>
-	 * <Br>
-	 * Implementations thus need not call {@literal rs.next()} or other positioning methods
-	 * since the cursor is already positioned on the first row.
-	 * 
-	 * @param resultSet the result set
-	 * @return the single result
-	 * @throws SQLException if thrown from the result set
-	 */
-	T mapValueFrom(ResultSet resultSet) throws SQLException;
-	
+	VoidResultImpl(QueryBuilderImpl<?> initialBuilder) {
+		super(initialBuilder);
+	}
+
+	@Override
+	Void getResult(PreparedStatement prepStmt) throws SQLException {
+		prepStmt.execute();
+		return null;
+	}
+
 }

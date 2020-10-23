@@ -18,26 +18,36 @@
  */
 package space.arim.jdbcaesar.it;
 
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 
 import space.arim.jdbcaesar.JdbCaesar;
-import space.arim.jdbcaesar.builder.JdbCaesarBuilder;
+import space.arim.jdbcaesar.JdbCaesarBuilder;
 
 public class JdbCaesarProvider implements ArgumentsProvider {
 	
 	@Override
 	public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
-		return ConnectionSources.all().map(this::fromSource).map(Arguments::of);
+		return Arrays.stream(Vendor.values())
+				.map((vendor) -> {
+					return (IdentifiedDataSource) context.getRoot().getStore(Namespace.GLOBAL)
+							.getOrComputeIfAbsent(vendor, DataSourceCreator::create);
+				})
+				.filter(Objects::nonNull)
+				.map(this::fromSource)
+				.map(Arguments::of);
 	}
 	
-	private JdbCaesar fromSource(IdentifiedConnectionSource source) {
+	private JdbCaesar fromSource(IdentifiedDataSource source) {
 		JdbCaesarBuilder jdbCaesarBuilder = new JdbCaesarBuilder()
-				.connectionSource(source)
+				.dataSource(source)
 				.exceptionHandler(Assertions::fail)
 				.rewrapExceptions(true)
 				.defaultIsolation(source.vendor().defaultIsolation());

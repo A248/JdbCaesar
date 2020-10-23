@@ -59,17 +59,17 @@ public class TransactionIT {
 
 			assertSomeNumberValue(querySource, 1);
 			return null;
-		}).onError(() -> fail("This should never happen")).execute();
+		}).executeOrGet(() -> fail("This should never happen"));
 
 		jdbCaesar.transaction().body((querySource, controller) -> {
 			querySource.query("UPDATE transactions SET someNumber = ? WHERE someNumber = ?")
 					.params(15, 1)
-						.voidResult().execute();
+					.voidResult().execute();
 			assertSomeNumberValue(querySource, 15);
 
 			controller.rollback();
 			return null;
-		}).onError(() -> fail("This should never happen")).execute();
+		}).executeOrGet(() -> fail("This should never happen"));
 
 		assertSomeNumberValue(jdbCaesar, 1);
 	}

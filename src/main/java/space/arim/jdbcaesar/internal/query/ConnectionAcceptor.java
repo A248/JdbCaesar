@@ -16,31 +16,31 @@
  * along with JdbCaesar. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU Lesser General Public License.
  */
-package space.arim.jdbcaesar.mapper;
+package space.arim.jdbcaesar.internal.query;
 
-import java.sql.ResultSet;
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 
-/**
- * A mapper which maps a row of a result set to a single value
- * 
- * @author A248
- *
- * @param <T> the result type
- */
-@FunctionalInterface
-public interface ResultSingleMapper<T> {
+public abstract class ConnectionAcceptor<R> {
+	
+	private final QueryBuilderImpl<?> initialBuilder;
+	
+	ConnectionAcceptor(QueryBuilderImpl<?> initialBuilder) {
+		this.initialBuilder = initialBuilder;
+	}
 
-	/**
-	 * Maps a single result from the current row of the specified result set. <br>
-	 * <Br>
-	 * Implementations thus need not call {@literal rs.next()} or other positioning methods
-	 * since the cursor is already positioned on the first row.
-	 * 
-	 * @param resultSet the result set
-	 * @return the single result
-	 * @throws SQLException if thrown from the result set
-	 */
-	T mapValueFrom(ResultSet resultSet) throws SQLException;
+	public QueryBuilderImpl<?> getInitialBuilder() {
+		return initialBuilder;
+	}
+
+	public abstract R acceptConnection(Connection conn) throws SQLException;
+	
+	public SQLException rewrapExceptionWithDetails(SQLException ex) {
+		return new SQLException(
+				"For statement [" + initialBuilder.getStatement() + "], "
+						+ "parameters " + Arrays.deepToString(initialBuilder.getParameters()),
+				ex);
+	}
 	
 }

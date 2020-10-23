@@ -33,11 +33,11 @@ public interface ResultElementMapper<T> {
 
 	/**
 	 * Maps an element of a resulting collection from the current row of the specified result set. <br>
-	 * (Implementations thus need not call {@literal rs.next()})
+	 * (Implementations thus need not call {@literal resultSet.next()} or other positioning methods)
 	 * 
 	 * @param resultSet the result set
 	 * @return an element of a resulting collection
-	 * @throws SQLException generally, per JDBC
+	 * @throws SQLException if thrown from the result set
 	 */
 	T mapElementFrom(ResultSet resultSet) throws SQLException;
 	

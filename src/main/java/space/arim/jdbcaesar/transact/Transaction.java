@@ -18,20 +18,25 @@
  */
 package space.arim.jdbcaesar.transact;
 
+import space.arim.jdbcaesar.ExecutableSQL;
+import space.arim.jdbcaesar.error.UncheckedSQLException;
+
 /**
- * An executable transaction
+ * Transaction ready to execute
  * 
  * @author A248
  *
- * @param <T> result type of the whole transaction
+ * @param <R> the result type of the whole transaction
  */
-public interface Transaction<T> {
-
+public interface Transaction<R> extends ExecutableSQL<R> {
+	
 	/**
 	 * Executes this transaction
 	 * 
 	 * @return the result of the transaction
+	 * @throws UncheckedSQLException if any query threw a {@code SQLException}
 	 */
-	T execute();
+	@Override
+	R execute();
 	
 }

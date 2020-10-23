@@ -18,23 +18,25 @@
  */
 package space.arim.jdbcaesar.query;
 
-import java.sql.SQLException;
+import space.arim.jdbcaesar.ExecutableSQL;
+import space.arim.jdbcaesar.error.UncheckedSQLException;
 
 /**
- * An executable query, whose details have already been specified.
+ * General interface for queries ready to execute.
  * 
  * @author A248
  *
  * @param <R> the result type
  */
-public interface QueryResult<R> {
-
+public interface QueryResult<R> extends ExecutableSQL<R> {
+	
 	/**
-	 * Executes the query. If a {@link SQLException} is encountered, the error substitute provider is invoked.
-	 * Otherwise, the mapped result is returned.
+	 * Executes the query and gets the mapped result
 	 * 
-	 * @return the mapped result or the substitute result
+	 * @return the mapped result
+	 * @throws UncheckedSQLException if the query threw a {@code SQLException}
 	 */
+	@Override
 	R execute();
 	
 }
