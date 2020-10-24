@@ -24,7 +24,9 @@ import java.util.Objects;
 
 import space.arim.jdbcaesar.JdbCaesar;
 import space.arim.jdbcaesar.JdbCaesarProperties;
+import space.arim.jdbcaesar.assimilate.AssimilatedQuerySource;
 import space.arim.jdbcaesar.error.UncheckedSQLException;
+import space.arim.jdbcaesar.internal.assimilate.AssimilatedQuerySourceImpl;
 import space.arim.jdbcaesar.internal.query.ConnectionAcceptor;
 import space.arim.jdbcaesar.internal.transact.MutableTransactionSettings;
 import space.arim.jdbcaesar.internal.transact.TransactionBuilderImpl;
@@ -52,6 +54,11 @@ public class JdbCaesarImpl implements JdbCaesar, QueryExecutor<SingleQueryBuilde
 	@Override
 	public TransactionBuilder transaction() {
 		return new TransactionBuilderImpl(properties);
+	}
+	
+	@Override
+	public AssimilatedQuerySource assimilate(Connection connection) {
+		return new AssimilatedQuerySourceImpl(properties, connection);
 	}
 	
 	@Override

@@ -18,6 +18,9 @@
  */
 package space.arim.jdbcaesar;
 
+import java.sql.Connection;
+
+import space.arim.jdbcaesar.assimilate.AssimilatedQuerySource;
 import space.arim.jdbcaesar.query.QueryBuilder;
 import space.arim.jdbcaesar.query.SingleQueryBuilder;
 import space.arim.jdbcaesar.transact.TransactionBuilder;
@@ -25,8 +28,9 @@ import space.arim.jdbcaesar.transact.TransactionBuilder;
 /**
  * Main interface for JdbCaesar. <br>
  * <br>
- * This interface is immutable and thread safe. However, {@link QueryBuilder}s and
- * {@link TransactionBuilder}s returned are intended to only be used by a single thread.
+ * This interface is immutable and thread safe. However, builder objects (e.g.
+ * {@link QueryBuilder}s and {@link TransactionBuilder}s) returned are intended
+ * to only be used by a single thread.
  * 
  * @author A248
  *
@@ -55,4 +59,18 @@ public interface JdbCaesar extends QuerySource<SingleQueryBuilder> {
 	 */
 	TransactionBuilder transaction();
 	
+	/**
+	 * Assimilates an open connection. None of the connection's properties will be
+	 * changed. <br>
+	 * <br>
+	 * When queries are executed using the assimilated query source, whether they
+	 * are committed depends on the auto commit setting of the connection. If auto
+	 * commit is disabled, users of this method must commit and rollback manually.
+	 * 
+	 * @param connection the open connection
+	 * @return an assimilated query source, which should be closed when no longer
+	 *         needed
+	 */
+	AssimilatedQuerySource assimilate(Connection connection);
+
 }
