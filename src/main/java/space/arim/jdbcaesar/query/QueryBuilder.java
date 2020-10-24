@@ -168,6 +168,15 @@ public interface QueryBuilder<B extends QueryBuilder<B>> {
 	<R> QueryResult<R> updateCount(UpdateCountMapper<R> mapper);
 	
 	/**
+	 * Maps to an update count result
+	 * 
+	 * @return an executable query yielding the update count
+	 */
+	default QueryResult<Integer> updateCount() {
+		return updateCount(UpdateCountMapper.identity());
+	}
+	
+	/**
 	 * Maps to a result from an update count and generated keys.
 	 * 
 	 * @param <R> the type of the result
