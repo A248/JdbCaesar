@@ -1,9 +1,19 @@
 
 ## Changelog
 
-All versions and their changes, in reverse chronological order of date made available.
+All versions and their changes detailed.
 
-Release versions typically include the features introduced by past snapshot versions since the last release.
+### 0.6.0
+
+* Overhauls exception handling to be fail-fast by default.
+* JdbCaesarBuilder no longer requires an exception handler.
+* Minor performance gain when rolling back transactions.
+* Migrating:
+    * ConnectionSource is removed in favour of javax.sql.DataSource
+    * `execute()` is fail-fast and may throw `UncheckedSQLException`
+    * `onError(() -> {}).execute()` is removed. Use `executeOrGet(() -> {})` to retain behaviour. Alternatively, use `execute()`.
+    * JdbCaesarBuilder is moved, so updating imports is necessary.
+    * All other changes should be fixed by a recompile. Intermediate builder objects have been changed, but these are rarely referenced.
 
 ### 0.5.0
 
