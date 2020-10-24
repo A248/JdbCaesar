@@ -23,7 +23,6 @@ import java.sql.SQLException;
 import java.sql.Savepoint;
 
 import space.arim.jdbcaesar.error.UncheckedSQLException;
-import space.arim.jdbcaesar.internal.PropertiesImpl;
 import space.arim.jdbcaesar.internal.QueryExecutor;
 import space.arim.jdbcaesar.internal.query.ConnectionAcceptor;
 import space.arim.jdbcaesar.transact.TransactionQueryBuilder;
@@ -33,17 +32,17 @@ import space.arim.jdbcaesar.transact.TransactionQuerySource;
 class TransactionQuerySourceImpl
 		implements TransactionQuerySource, TransactionController, QueryExecutor<TransactionQueryBuilder> {
 	
+	private final TransactionImpl<?> transaction;
 	private final Connection connection;
-	private final PropertiesImpl properties;
 	
-	TransactionQuerySourceImpl(Connection connection, PropertiesImpl properties) {
+	TransactionQuerySourceImpl(TransactionImpl<?> transaction, Connection connection) {
+		this.transaction = transaction;
 		this.connection = connection;
-		this.properties = properties;
 	}
 	
 	@Override
 	public TransactionQueryBuilder query(String statement) {
-		return new TransactionQueryBuilderImpl(this, statement, properties);
+		return new TransactionQueryBuilderImpl(this, statement, transaction.getProperties());
 	}
 
 	@Override
@@ -51,10 +50,12 @@ class TransactionQuerySourceImpl
 		try {
 			return acceptor.acceptConnection(connection);
 		} catch (SQLException ex) {
-			if (properties.isRewrapExceptions()) {
+			if (transaction.getProperties().isRewrapExceptions()) {
 				ex = acceptor.rewrapExceptionWithDetails(ex);
 			}
 			throw new UncheckedSQLException(ex);
+		} finally {
+			transaction.setNeedsCommit(true);
 		}
 	}
 	
@@ -76,11 +77,13 @@ class TransactionQuerySourceImpl
 	@Override
 	public void rollbackTo(Savepoint savepoint) throws SQLException {
 		connection.rollback(savepoint);
+		transaction.setNeedsCommit(false);
 	}
 
 	@Override
 	public void rollback() throws SQLException {
 		connection.rollback();
+		transaction.setNeedsCommit(false);
 	}
 
 }

@@ -32,26 +32,35 @@ class TransactionImpl<R> implements Transaction<R> {
 	private final TransactionBuilderImpl initialBuilder;
 	private final TransactionBody<R> body;
 	
+	private boolean needsCommit;
+	
 	TransactionImpl(TransactionBuilderImpl initialBuilder, TransactionBody<R> body) {
 		this.initialBuilder = initialBuilder;
 		this.body = body;
 	}
 	
+	PropertiesImpl getProperties() {
+		return initialBuilder.getProperties();
+	}
+	
+	void setNeedsCommit(boolean needsCommit) {
+		this.needsCommit = needsCommit;
+	}
+
 	@Override
 	public R execute() {
-		PropertiesImpl properties = initialBuilder.getProperties();
 		MutableTransactionSettings settings = initialBuilder.getSettings();
 		int isolationLevel = settings.getIsolation().getLevel();
 		boolean readOnly = settings.isReadOnly();
 
-		try (Connection connection = properties.getDataSource().getConnection()) {
+		try (Connection connection = getProperties().getDataSource().getConnection()) {
 			connection.setAutoCommit(false);
 			connection.setTransactionIsolation(isolationLevel);
 			connection.setReadOnly(readOnly);
 
 			R result;
 			try {
-				TransactionQuerySourceImpl sourceAndController = new TransactionQuerySourceImpl(connection, properties);
+				TransactionQuerySourceImpl sourceAndController = new TransactionQuerySourceImpl(this, connection);
 				result = body.transact(sourceAndController, sourceAndController);
 
 			} catch (RuntimeException ex) { // includes UncheckedSQLException
@@ -65,7 +74,9 @@ class TransactionImpl<R> implements Transaction<R> {
 				} catch (SQLException suppressed) { ex.addSuppressed(suppressed); }
 				throw new UncheckedSQLException(ex);
 			}
-			connection.commit();
+			if (needsCommit) {
+				connection.commit();
+			}
 			return result;
 
 		} catch (SQLException ex) {
@@ -78,7 +89,7 @@ class TransactionImpl<R> implements Transaction<R> {
 		try {
 			return execute();
 		} catch (UncheckedSQLException ex) {
-			initialBuilder.getProperties().getExceptionHandler().handleException(ex.getCause());
+			getProperties().getExceptionHandler().handleException(ex.getCause());
 			return onError.getSubstituteValue();
 		}
 	}
