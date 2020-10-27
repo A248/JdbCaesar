@@ -23,7 +23,6 @@ import java.sql.SQLException;
 
 import space.arim.jdbcaesar.internal.PropertiesImpl;
 import space.arim.jdbcaesar.internal.QueryExecutor;
-import space.arim.jdbcaesar.internal.SqlUtils;
 import space.arim.jdbcaesar.mapper.TotalResultMapper;
 import space.arim.jdbcaesar.mapper.UpdateCountMapper;
 import space.arim.jdbcaesar.mapper.UpdateGenKeysMapper;

@@ -37,11 +37,9 @@ class TotalResultImpl<R> extends AbstractQueryResult<R> {
 	@Override
 	R getResult(PreparedStatement prepStmt) throws SQLException {
 		prepStmt.setFetchSize(getInitialBuilder().getFetchSize());
-		R result;
 		try (ResultSet resultSet = prepStmt.executeQuery()) {
-			result = mapper.mapFrom(resultSet);
+			return mapper.mapFrom(resultSet);
 		}
-		return result;
 	}
 	
 	@Override

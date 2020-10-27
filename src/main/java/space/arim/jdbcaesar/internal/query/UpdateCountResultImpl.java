@@ -35,14 +35,12 @@ class UpdateCountResultImpl<R> extends AbstractQueryResult<R> {
 	
 	@Override
 	R getResult(PreparedStatement prepStmt) throws SQLException {
-		R result;
 		prepStmt.execute();
 		int updateCount = prepStmt.getUpdateCount();
 		if (updateCount == -1 && !mapper.allowNonUpdateCount()) {
 			throw new SQLNoUpdateCountException();
 		}
-		result = mapper.mapValueFrom(updateCount);
-		return result;
+		return mapper.mapValueFrom(updateCount);
 	}
 
 }

@@ -16,16 +16,16 @@
  * along with JdbCaesar. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU Lesser General Public License.
  */
-package space.arim.jdbcaesar.internal;
+package space.arim.jdbcaesar.internal.query;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public final class SqlUtils {
+final class SqlUtils {
 
 	private SqlUtils() {}
 	
-	public static void setArguments(PreparedStatement prepStmt, Object[] args, int nullType) throws SQLException {
+	static void setArguments(PreparedStatement prepStmt, Object[] args, int nullType) throws SQLException {
 		for (int n = 0; n < args.length; n++) {
 			Object param = args[n];
 			int position = n + 1;
