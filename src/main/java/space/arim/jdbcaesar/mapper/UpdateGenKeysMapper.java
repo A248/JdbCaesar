@@ -45,7 +45,7 @@ public interface UpdateGenKeysMapper<T> {
 	 * @param updateCount the update count or possibly {@code -1} if {@link #allowNonUpdateCount()} is {@code true}
 	 * @param genKeys any generated keys or an empty result set if none were generated
 	 * @return the single result
-	 * @throws SQLException generally, per JDBC
+	 * @throws SQLException if thrown from the result set
 	 */
 	T mapValueFrom(int updateCount, ResultSet genKeys) throws SQLException;
 	

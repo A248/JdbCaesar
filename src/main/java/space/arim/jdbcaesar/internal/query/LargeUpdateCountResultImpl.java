@@ -16,43 +16,31 @@
  * along with JdbCaesar. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU Lesser General Public License.
  */
-package space.arim.jdbcaesar.error;
+package space.arim.jdbcaesar.internal.query;
 
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.SQLNonTransientConnectionException;
 
+import space.arim.jdbcaesar.error.SQLNoUpdateCountException;
 import space.arim.jdbcaesar.mapper.LargeUpdateCountMapper;
-import space.arim.jdbcaesar.mapper.UpdateCountMapper;
 
-/**
- * A {@code SQLException} thrown to when an {@link UpdateCountMapper} or {@link LargeUpdateCountMapper}
- * expected an update count but the query did not produce an update count.
- * 
- * @author A248
- *
- */
-public class SQLNoUpdateCountException extends SQLNonTransientConnectionException {
+class LargeUpdateCountResultImpl<R> extends AbstractQueryResult<R> {
 
-	/**
-	 * Serial version uid
-	 */
-	private static final long serialVersionUID = -7233580034199827356L;
+	private final LargeUpdateCountMapper<R> mapper;
 	
-	/**
-	 * Creates the exception
-	 * 
-	 */
-	public SQLNoUpdateCountException() {
-
+	LargeUpdateCountResultImpl(QueryBuilderImpl<?> initialBuilder, LargeUpdateCountMapper<R> mapper) {
+		super(initialBuilder);
+		this.mapper = mapper;
 	}
-	
-	/**
-	 * Creates the exception
-	 * 
-	 * @param cause the exception cause
-	 */
-	public SQLNoUpdateCountException(SQLException cause) {
-		super(cause);
+
+	@Override
+	R getResult(PreparedStatement prepStmt) throws SQLException {
+		prepStmt.execute();
+		long updateCount = prepStmt.getLargeUpdateCount();
+		if (updateCount == -1 && !mapper.allowNonUpdateCount()) {
+			throw new SQLNoUpdateCountException();
+		}
+		return mapper.mapValueFrom(updateCount);
 	}
 
 }

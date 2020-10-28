@@ -19,29 +19,28 @@
 package space.arim.jdbcaesar.mapper;
 
 import space.arim.jdbcaesar.error.SQLNoUpdateCountException;
-import space.arim.jdbcaesar.query.QueryBuilder;
 
 /**
- * A mapper which maps an update count to a single value
+ * A mapper which maps a large update count to a single value
  * 
  * @author A248
  *
  * @param <T> the result type
  */
 @FunctionalInterface
-public interface UpdateCountMapper<T> {
+public interface LargeUpdateCountMapper<T> {
 
 	/**
-	 * Maps a single value from the specified update count. <br>
+	 * Maps a single value from the specified large update count. <br>
 	 * <br>
 	 * By default, if the query did not produce an update coumt, a {@link SQLNoUpdateCountException} will be thrown.
 	 * However, if {@link #allowNonUpdateCount()} = {@code true}, and the query did not produce an update count,
 	 * then {@code updateCount} will be {@code -1}.
 	 * 
-	 * @param updateCount the update count or possibly {@code -1} if {@link #allowNonUpdateCount()} is {@code true}
+	 * @param updateCount the large update count or possibly {@code -1} if {@link #allowNonUpdateCount()} is {@code true}
 	 * @return the result
 	 */
-	T mapValueFrom(int updateCount);
+	T mapValueFrom(long updateCount);
 	
 	/**
 	 * Whether this mapper accepts no update count. By default, this is false.
@@ -50,16 +49,6 @@ public interface UpdateCountMapper<T> {
 	 */
 	default boolean allowNonUpdateCount() {
 		return false;
-	}
-	
-	/**
-	 * Gets an identity update count mapper, equivalent to <pre>{@code (updateCount) -> updateCount}</pre> <br>
-	 * Consider using {@link QueryBuilder#updateCount()} instead
-	 * 
-	 * @return an identity update count mapper
-	 */
-	static UpdateCountMapper<Integer> identity() {
-		return (updateCount) -> updateCount;
 	}
 	
 }

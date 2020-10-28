@@ -23,6 +23,7 @@ import java.sql.SQLException;
 
 import space.arim.jdbcaesar.internal.PropertiesImpl;
 import space.arim.jdbcaesar.internal.QueryExecutor;
+import space.arim.jdbcaesar.mapper.LargeUpdateCountMapper;
 import space.arim.jdbcaesar.mapper.TotalResultMapper;
 import space.arim.jdbcaesar.mapper.UpdateCountMapper;
 import space.arim.jdbcaesar.mapper.UpdateGenKeysMapper;
@@ -133,6 +134,11 @@ public class QueryBuilderImpl<B extends QueryBuilder<B>> implements QueryBuilder
 	@Override
 	public <R> QueryResult<R> updateGenKeys(UpdateGenKeysMapper<R> mapper) {
 		return new UpdateGenKeysResultImpl<>(this, mapper);
+	}
+	
+	@Override
+	public <R> QueryResult<R> largeUpdateCount(LargeUpdateCountMapper<R> mapper) {
+		return new LargeUpdateCountResultImpl<>(this, mapper);
 	}
 	
 }

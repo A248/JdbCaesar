@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 import space.arim.jdbcaesar.mapper.TotalResultMapper;
+import space.arim.jdbcaesar.mapper.LargeUpdateCountMapper;
 import space.arim.jdbcaesar.mapper.ResultElementMapper;
 import space.arim.jdbcaesar.mapper.ResultSingleMapper;
 import space.arim.jdbcaesar.mapper.UpdateCountMapper;
@@ -184,5 +185,23 @@ public interface QueryBuilder<B extends QueryBuilder<B>> {
 	 * @return an executable query
 	 */
 	<R> QueryResult<R> updateGenKeys(UpdateGenKeysMapper<R> mapper);
+	
+	/**
+	 * Maps to a result from a large update count
+	 * 
+	 * @param <R> the type of the result
+	 * @param mapper the large update count mapper
+	 * @return an executable query
+	 */
+	<R> QueryResult<R> largeUpdateCount(LargeUpdateCountMapper<R> mapper);
+	
+	/**
+	 * Maps to a large update count result
+	 * 
+	 * @return an executable query yielding the large update count
+	 */
+	default QueryResult<Long> largeUpdateCount() {
+		return largeUpdateCount((updateCount) -> updateCount);
+	}
 	
 }
