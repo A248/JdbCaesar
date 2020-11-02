@@ -91,6 +91,7 @@ public class QueryBuilderImpl<B extends QueryBuilder<B>> implements QueryBuilder
 	
 	@Override
 	public B params(Object...parameters) {
+		parameters = parameters.clone();
 		for (int n = 0; n < parameters.length; n++) {
 			parameters[n] = properties.adaptParameter(parameters[n]);
 		}
