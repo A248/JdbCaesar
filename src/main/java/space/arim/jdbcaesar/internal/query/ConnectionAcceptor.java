@@ -36,11 +36,10 @@ public abstract class ConnectionAcceptor<R> {
 
 	public abstract R acceptConnection(Connection conn) throws SQLException;
 	
-	public SQLException rewrapExceptionWithDetails(SQLException ex) {
-		return new SQLException(
-				"For statement [" + initialBuilder.getStatement() + "], "
-						+ "parameters " + Arrays.deepToString(initialBuilder.getParameters()),
-				ex);
+	public String getExceptionDetails() {
+		QueryBuilderImpl<?> initialBuilder = getInitialBuilder();
+		return "For statement [" + initialBuilder.getStatement() + "] and "
+				+ "parameters " + Arrays.deepToString(initialBuilder.getParameters());
 	}
 	
 }

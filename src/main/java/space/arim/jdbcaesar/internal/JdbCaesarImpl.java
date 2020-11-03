@@ -76,19 +76,18 @@ public class JdbCaesarImpl implements JdbCaesar, QueryExecutor<SingleQueryBuilde
 			R result;
 			try {
 				result = acceptor.acceptConnection(connection);
+
 			} catch (RuntimeException ex) {
 				try {
 					connection.rollback();
 				} catch (SQLException suppressed) { ex.addSuppressed(suppressed); }
 				throw ex;
+
 			} catch (SQLException ex) {
 				try {
 					connection.rollback();
 				} catch (SQLException suppressed) { ex.addSuppressed(suppressed); }
-				if (properties.isRewrapExceptions()) {
-					ex = acceptor.rewrapExceptionWithDetails(ex);
-				}
-				throw new UncheckedSQLException(ex);
+				throw new UncheckedSQLException(acceptor.getExceptionDetails(), ex);
 			}
 			connection.commit();
 			return result;

@@ -73,7 +73,9 @@ public interface JdbCaesarProperties {
 	 * Gets whether rewrapping exceptions with more info is enabled
 	 * 
 	 * @return whether exceptions are rewrapped with more details
+	 * @deprecated See deprecation of {@link JdbCaesarBuilder#rewrapExceptions(boolean)}
 	 */
+	@Deprecated
 	boolean isRewrapExceptions();
 	
 	/**

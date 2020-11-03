@@ -68,6 +68,7 @@ class TransactionImpl<R> implements Transaction<R> {
 					connection.rollback();
 				} catch (SQLException suppressed) { ex.addSuppressed(suppressed); }
 				throw ex;
+
 			} catch (SQLException ex) {
 				try {
 					connection.rollback();

@@ -50,10 +50,7 @@ class TransactionQuerySourceImpl
 		try {
 			return acceptor.acceptConnection(connection);
 		} catch (SQLException ex) {
-			if (transaction.getProperties().isRewrapExceptions()) {
-				ex = acceptor.rewrapExceptionWithDetails(ex);
-			}
-			throw new UncheckedSQLException(ex);
+			throw new UncheckedSQLException(acceptor.getExceptionDetails(), ex);
 		} finally {
 			transaction.setNeedsCommit(true);
 		}

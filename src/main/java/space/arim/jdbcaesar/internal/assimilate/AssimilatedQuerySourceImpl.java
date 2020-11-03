@@ -23,9 +23,9 @@ import java.sql.SQLException;
 
 import space.arim.jdbcaesar.assimilate.AssimilatedQuerySource;
 import space.arim.jdbcaesar.error.UncheckedSQLException;
+import space.arim.jdbcaesar.internal.query.ConnectionAcceptor;
 import space.arim.jdbcaesar.internal.PropertiesImpl;
 import space.arim.jdbcaesar.internal.QueryExecutor;
-import space.arim.jdbcaesar.internal.query.ConnectionAcceptor;
 import space.arim.jdbcaesar.assimilate.AssimilatedQueryBuilder;
 
 public class AssimilatedQuerySourceImpl implements AssimilatedQuerySource, QueryExecutor<AssimilatedQueryBuilder> {
@@ -48,10 +48,7 @@ public class AssimilatedQuerySourceImpl implements AssimilatedQuerySource, Query
 		try {
 			return acceptor.acceptConnection(connection);
 		} catch (SQLException ex) {
-			if (properties.isRewrapExceptions()) {
-				ex = acceptor.rewrapExceptionWithDetails(ex);
-			}
-			throw new UncheckedSQLException(ex);
+			throw new UncheckedSQLException(acceptor.getExceptionDetails(), ex);
 		}
 	}
 	

@@ -29,10 +29,11 @@ import javax.sql.DataSource;
 import space.arim.jdbcaesar.adapter.DataTypeAdapter;
 import space.arim.jdbcaesar.error.ExceptionHandler;
 import space.arim.jdbcaesar.error.SubstituteProvider;
+import space.arim.jdbcaesar.error.UncheckedSQLException;
 import space.arim.jdbcaesar.internal.JdbCaesarImpl;
 import space.arim.jdbcaesar.internal.PropertiesImpl;
-import space.arim.jdbcaesar.query.QueryResult;
 import space.arim.jdbcaesar.query.QueryBuilder;
+import space.arim.jdbcaesar.query.QueryResult;
 import space.arim.jdbcaesar.transact.IsolationLevel;
 import space.arim.jdbcaesar.transact.Transaction;
 import space.arim.jdbcaesar.transact.TransactionSettingsBuilder;
@@ -177,17 +178,15 @@ public class JdbCaesarBuilder implements JdbCaesarProperties {
 	
 	/**
 	 * Decides whether to rewrap {@code SQLException}s with more detailed exception messages.
-	 * By default this setting is false, but using it may be helpful for debugging purposes. <br>
-	 * <br>
-	 * If enabled, all {@code SQLException}s arising from executing statements through JdbCaesar will be
-	 * rewrapped to provide more detailed exception messages, including the executed SQL statement and
-	 * all parameters passed to {@link QueryBuilder#params(Object...)}. Only {@code SQLException}s
-	 * directly arising from query execution will be wrapped, and not circumstantial operations such as
-	 * retrieving and closing connections, setting transaction isolation values, and committing and rolling back.
+	 * By default this setting is false, but using it may be helpful for debugging purposes.
 	 * 
+	 * @deprecated Exceptions are already wrapped in {@link UncheckedSQLException}, therefore
+	 * there is no point in disabling the extra details provided in the exception message. This
+	 * method has therefore been made a no op.
 	 * @param rewrapExceptions true to rewrap {@code SQLException}s with more details, false otherwise
 	 * @return this builder
 	 */
+	@Deprecated
 	public JdbCaesarBuilder rewrapExceptions(boolean rewrapExceptions) {
 		this.rewrapExceptions = rewrapExceptions;
 		return this;
@@ -246,6 +245,7 @@ public class JdbCaesarBuilder implements JdbCaesarProperties {
 		return nullType;
 	}
 
+	@Deprecated
 	@Override
 	public boolean isRewrapExceptions() {
 		return rewrapExceptions;

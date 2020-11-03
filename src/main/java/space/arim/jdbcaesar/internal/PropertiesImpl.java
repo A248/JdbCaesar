@@ -104,6 +104,7 @@ public class PropertiesImpl implements JdbCaesarProperties {
 		return nullType;
 	}
 
+	@Deprecated
 	@Override
 	public boolean isRewrapExceptions() {
 		return rewrapExceptions;
