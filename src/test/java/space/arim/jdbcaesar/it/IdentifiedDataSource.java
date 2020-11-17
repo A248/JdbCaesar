@@ -31,4 +31,10 @@ public abstract class IdentifiedDataSource implements DataSource {
 	public Vendor vendor() {
 		return vendor;
 	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + " [vendor=" + vendor + "]";
+	}
+	
 }

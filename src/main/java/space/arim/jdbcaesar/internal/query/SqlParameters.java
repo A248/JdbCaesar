@@ -21,11 +21,17 @@ package space.arim.jdbcaesar.internal.query;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-final class SqlUtils {
+class SqlParameters {
 
-	private SqlUtils() {}
+	private final Object[] args;
+	private final int nullType;
 	
-	static void setArguments(PreparedStatement prepStmt, Object[] args, int nullType) throws SQLException {
+	SqlParameters(Object[] args, int nullType) {
+		this.args = args;
+		this.nullType = nullType;
+	}
+	
+	void setArguments(PreparedStatement prepStmt) throws SQLException {
 		for (int n = 0; n < args.length; n++) {
 			Object param = args[n];
 			int position = n + 1;

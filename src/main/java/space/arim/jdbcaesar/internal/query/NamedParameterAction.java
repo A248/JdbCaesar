@@ -18,28 +18,8 @@
  */
 package space.arim.jdbcaesar.internal.query;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Arrays;
+interface NamedParameterAction {
 
-public abstract class ConnectionAcceptor<R> {
-	
-	private final QueryBuilderImpl<?> initialBuilder;
-	
-	ConnectionAcceptor(QueryBuilderImpl<?> initialBuilder) {
-		this.initialBuilder = initialBuilder;
-	}
-
-	public QueryBuilderImpl<?> getInitialBuilder() {
-		return initialBuilder;
-	}
-
-	public abstract R acceptConnection(Connection conn) throws SQLException;
-	
-	public String getExceptionDetails() {
-		QueryBuilderImpl<?> initialBuilder = getInitialBuilder();
-		return "For statement [" + initialBuilder.getStatement() + "] and "
-				+ "parameters " + Arrays.deepToString(initialBuilder.getArguments());
-	}
+	void visitParameter(String namedParameter);
 	
 }

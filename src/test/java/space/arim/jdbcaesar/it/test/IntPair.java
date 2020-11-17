@@ -16,30 +16,50 @@
  * along with JdbCaesar. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU Lesser General Public License.
  */
-package space.arim.jdbcaesar.internal.query;
+package space.arim.jdbcaesar.it.test;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Arrays;
+final class IntPair {
 
-public abstract class ConnectionAcceptor<R> {
+	private final int value1;
+	private final int value2;
 	
-	private final QueryBuilderImpl<?> initialBuilder;
+	IntPair(int value1, int value2) {
+		this.value1 = value1;
+		this.value2 = value2;
+	}
 	
-	ConnectionAcceptor(QueryBuilderImpl<?> initialBuilder) {
-		this.initialBuilder = initialBuilder;
+	int value1() {
+		return value1;
+	}
+	
+	int value2() {
+		return value2;
 	}
 
-	public QueryBuilderImpl<?> getInitialBuilder() {
-		return initialBuilder;
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + value1;
+		result = prime * result + value2;
+		return result;
 	}
 
-	public abstract R acceptConnection(Connection conn) throws SQLException;
-	
-	public String getExceptionDetails() {
-		QueryBuilderImpl<?> initialBuilder = getInitialBuilder();
-		return "For statement [" + initialBuilder.getStatement() + "] and "
-				+ "parameters " + Arrays.deepToString(initialBuilder.getArguments());
+	@Override
+	public boolean equals(Object object) {
+		if (this == object) {
+			return true;
+		}
+		if (!(object instanceof IntPair)) {
+			return false;
+		}
+		IntPair other = (IntPair) object;
+		return value1 == other.value1 && value2 == other.value2;
+	}
+
+	@Override
+	public String toString() {
+		return "IntPair [value1=" + value1 + ", value2=" + value2 + "]";
 	}
 	
 }

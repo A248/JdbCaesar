@@ -34,14 +34,16 @@ abstract class AbstractQueryResult<R> extends ConnectionAcceptor<R> implements Q
 	
 	@Override
 	public R acceptConnection(Connection connection) throws SQLException {
-		QueryBuilderImpl<?> initialBuilder = getInitialBuilder();
-
 		try (PreparedStatement prepStmt = prepareStatement(connection)) {
-			initialBuilder.setParameters(prepStmt);
+			setArguments(prepStmt);
 			return getResult(prepStmt);
 		}
 	}
-	
+
+	void setArguments(PreparedStatement prepStmt) throws SQLException {
+		getInitialBuilder().setSingleArguments(prepStmt);
+	}
+
 	PreparedStatement prepareStatement(Connection connection) throws SQLException {
 		return connection.prepareStatement(getInitialBuilder().getStatement());
 	}

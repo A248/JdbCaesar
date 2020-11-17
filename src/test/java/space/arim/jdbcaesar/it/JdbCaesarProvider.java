@@ -22,36 +22,28 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Assertions;
+import javax.sql.DataSource;
+
 import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 
-import space.arim.jdbcaesar.JdbCaesar;
 import space.arim.jdbcaesar.JdbCaesarBuilder;
+import space.arim.jdbcaesar.transact.IsolationLevel;
 
 public class JdbCaesarProvider implements ArgumentsProvider {
 	
 	@Override
 	public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
+		ExtensionContext.Store store = context.getRoot().getStore(ExtensionContext.Namespace.GLOBAL);
 		return Arrays.stream(Vendor.values())
-				.map((vendor) -> {
-					return (IdentifiedDataSource) context.getRoot().getStore(Namespace.GLOBAL)
-							.getOrComputeIfAbsent(vendor, DataSourceCreator::create);
-				})
+				.map((vendor) -> (DataSource) store.getOrComputeIfAbsent(vendor, DataSourceCreator::create))
 				.filter(Objects::nonNull)
-				.map(this::fromSource)
+				.map((dataSource) -> {
+					return new JdbCaesarBuilder()
+							.dataSource(dataSource).defaultIsolation(IsolationLevel.SERIALIZABLE).build();
+				})
 				.map(Arguments::of);
-	}
-	
-	private JdbCaesar fromSource(IdentifiedDataSource source) {
-		JdbCaesarBuilder jdbCaesarBuilder = new JdbCaesarBuilder()
-				.dataSource(source)
-				.exceptionHandler(Assertions::fail)
-				.rewrapExceptions(true)
-				.defaultIsolation(source.vendor().defaultIsolation());
-		return jdbCaesarBuilder.build();
 	}
 
 }

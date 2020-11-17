@@ -18,28 +18,22 @@
  */
 package space.arim.jdbcaesar.internal.query;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Arrays;
+import space.arim.jdbcaesar.JdbCaesarBuilder;
+import space.arim.jdbcaesar.QuerySource;
 
-public abstract class ConnectionAcceptor<R> {
+abstract class QuerySourceTestingBase {
+
+	private final QuerySource<?> querySource;
 	
-	private final QueryBuilderImpl<?> initialBuilder;
-	
-	ConnectionAcceptor(QueryBuilderImpl<?> initialBuilder) {
-		this.initialBuilder = initialBuilder;
+	QuerySourceTestingBase() {
+		querySource = new JdbCaesarBuilder()
+				// QueryResult#execute() should not be called from this query source
+				.dataSource(new UnsupportedDataSource())
+				.build();
 	}
-
-	public QueryBuilderImpl<?> getInitialBuilder() {
-		return initialBuilder;
-	}
-
-	public abstract R acceptConnection(Connection conn) throws SQLException;
 	
-	public String getExceptionDetails() {
-		QueryBuilderImpl<?> initialBuilder = getInitialBuilder();
-		return "For statement [" + initialBuilder.getStatement() + "] and "
-				+ "parameters " + Arrays.deepToString(initialBuilder.getArguments());
+	QueryBuilderImpl<?> query(String statement) {
+		return (QueryBuilderImpl<?>) querySource.query(statement);
 	}
 	
 }

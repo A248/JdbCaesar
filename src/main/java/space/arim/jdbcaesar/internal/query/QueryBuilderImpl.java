@@ -20,6 +20,9 @@ package space.arim.jdbcaesar.internal.query;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import space.arim.jdbcaesar.internal.PropertiesImpl;
 import space.arim.jdbcaesar.internal.QueryExecutor;
@@ -35,20 +38,22 @@ import space.arim.jdbcaesar.query.ResultSetType;
 public class QueryBuilderImpl<B extends QueryBuilder<B>> implements QueryBuilder<B> {
 
 	private final QueryExecutor<B> executor;
-	private final String statement;
+	private final String originalStatement;
 	private final PropertiesImpl properties;
 
-	private Object[] parameters = EMPTY_ARRAY;
+	private String statement;
+	private Object[] arguments = EMPTY_ARRAY;
 	private int fetchSize;
 	private ResultSetType resultSetType = ResultSetType.FORWARD_ONLY;
 	private ResultSetConcurrency resultSetConcurrency = ResultSetConcurrency.READ_ONLY;
 	
 	private static final Object[] EMPTY_ARRAY = new Object[] {};
 	
-	public QueryBuilderImpl(QueryExecutor<B> executor, String statement, PropertiesImpl properties) {
+	public QueryBuilderImpl(QueryExecutor<B> executor, String originalStatement, PropertiesImpl properties) {
 		this.executor = executor;
-		this.statement = statement;
+		this.originalStatement = originalStatement;
 		this.properties = properties;
+		statement = originalStatement;
 		fetchSize = properties.getDefaultFetchSize();
 	}
 
@@ -60,16 +65,28 @@ public class QueryBuilderImpl<B extends QueryBuilder<B>> implements QueryBuilder
 		return statement;
 	}
 	
+	void setStatement(String statement) {
+		this.statement = statement;
+	}
+	
 	PropertiesImpl getProperties() {
 		return properties;
 	}
 
-	void setParameters(PreparedStatement prepStmt) throws SQLException {
-		SqlUtils.setArguments(prepStmt, parameters, properties.getNullType());
+	void setSingleArguments(PreparedStatement prepStmt) throws SQLException {
+		new SqlParameters(arguments, properties.getNullType()).setArguments(prepStmt);
 	}
 	
-	Object[] getParameters() {
-		return parameters.clone();
+	Object[] copyAndAdaptArguments(Object[] arguments) {
+		Object[] adapted = new Object[arguments.length];
+		for (int n = 0; n < arguments.length; n++) {
+			adapted[n] = properties.adaptArgument(arguments[n]);
+		}
+		return adapted;
+	}
+	
+	Object[] getArguments() {
+		return arguments.clone();
 	}
 	
 	int getFetchSize() {
@@ -90,12 +107,36 @@ public class QueryBuilderImpl<B extends QueryBuilder<B>> implements QueryBuilder
 	}
 	
 	@Override
-	public B params(Object...parameters) {
-		parameters = parameters.clone();
-		for (int n = 0; n < parameters.length; n++) {
-			parameters[n] = properties.adaptParameter(parameters[n]);
+	public B params(Object...arguments) {
+		this.arguments = copyAndAdaptArguments(arguments);
+		return generify();
+	}
+
+	@Override
+	public B params(Map<String, Object> arguments) {
+		if (arguments.isEmpty()) {
+			this.arguments = EMPTY_ARRAY;
+			return generify();
 		}
-		this.parameters = parameters;
+		List<Object> orderedArguments = new ArrayList<>(arguments.size());
+		NamedParameterAction action = new NamedParameterAction() {
+
+			@Override
+			public void visitParameter(String namedParameter) {
+				if (!arguments.containsKey(namedParameter)) {
+					throw new IllegalArgumentException("No argument found for named parameter " + namedParameter);
+				}
+				Object argument = arguments.get(namedParameter);
+				orderedArguments.add(properties.adaptArgument(argument));
+			}
+		};
+		String statement = new NamedParameters(originalStatement, action).parseParameters();
+		if (orderedArguments.size() < arguments.size()) {
+			throw new IllegalArgumentException(
+					"Some named parameters in " + arguments + " not present in query " + originalStatement);
+		}
+		this.statement = statement;
+		this.arguments = orderedArguments.toArray();
 		return generify();
 	}
 	
@@ -140,6 +181,11 @@ public class QueryBuilderImpl<B extends QueryBuilder<B>> implements QueryBuilder
 	@Override
 	public <R> QueryResult<R> largeUpdateCount(LargeUpdateCountMapper<R> mapper) {
 		return new LargeUpdateCountResultImpl<>(this, mapper);
+	}
+
+	@Override
+	public BatchUpdateImpl batch() {
+		return new BatchUpdateImpl(this);
 	}
 	
 }

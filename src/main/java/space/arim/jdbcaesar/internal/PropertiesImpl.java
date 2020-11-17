@@ -70,14 +70,14 @@ public class PropertiesImpl implements JdbCaesarProperties {
 		return (adaptersView != null) ? adaptersView : (adaptersView = Collections.unmodifiableList(adapters));
 	}
 
-	public Object adaptParameter(Object param) {
+	public Object adaptArgument(Object argument) {
 		for (DataTypeAdapter adapter : adapters) {
-			Object result = adapter.adaptObject(param);
-			if (result != param) {
+			Object result = adapter.adaptObject(argument);
+			if (result != argument) {
 				return result;
 			}
 		}
-		return param;
+		return argument;
 	}
 
 	@Override

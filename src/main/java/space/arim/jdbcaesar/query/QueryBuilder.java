@@ -18,15 +18,18 @@
  */
 package space.arim.jdbcaesar.query;
 
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import space.arim.jdbcaesar.mapper.TotalResultMapper;
+import space.arim.jdbcaesar.JdbCaesarProperties;
 import space.arim.jdbcaesar.mapper.LargeUpdateCountMapper;
 import space.arim.jdbcaesar.mapper.ResultElementMapper;
 import space.arim.jdbcaesar.mapper.ResultSingleMapper;
+import space.arim.jdbcaesar.mapper.TotalResultMapper;
 import space.arim.jdbcaesar.mapper.UpdateCountMapper;
 import space.arim.jdbcaesar.mapper.UpdateGenKeysMapper;
 
@@ -40,14 +43,47 @@ import space.arim.jdbcaesar.mapper.UpdateGenKeysMapper;
 public interface QueryBuilder<B extends QueryBuilder<B>> {
 
 	/**
-	 * Sets the parameters of the query to be executed to the specified ones (optional operation). <br>
-	 * This is the equivalent of {@link java.sql.PreparedStatement#setObject(int, Object)} and
-	 * variants thereof.
+	 * Sets the parameter arguments of the query to be executed to the specified
+	 * ones. <br>
+	 * <br>
+	 * This is the equivalent of {@link PreparedStatement#setObject(int, Object)},
+	 * as well as {@link PreparedStatement#setNull(int, int)} where the null type is
+	 * determined as that configured as {@link JdbCaesarProperties#getNullType()}
 	 * 
-	 * @param parameters the parameters
-	 * @return the intermediate builder
+	 * @param arguments the argument parameters
+	 * @return this builder
 	 */
-	B params(Object...parameters);
+	B params(Object... arguments);
+
+	/**
+	 * Sets the parameter arguments of the query to be executed to the specified
+	 * named ones. Unlike {@link #params(Object...)}, this method avoids chaotic
+	 * ordering of parameter arguments by using named parameters. <br>
+	 * <br>
+	 * <b>Format</b> <br>
+	 * The format of a named parameter is a colon followed by the parameter name.
+	 * The parameter is terminated by a non alphanumeric or underscore letter. <br>
+	 * <br>
+	 * For example,
+	 * <code>SELECT * FROM table WHERE col1 = {@literal :param1} AND col2 = {@literal :param2}</code>.
+	 * The map would need to contain an entry for {@code param1} and {@code param2}.
+	 * <br>
+	 * <br>
+	 * <b>Extra Details</b> <br>
+	 * Named parameters may be specified more than once in the statement string.
+	 * <br>
+	 * <br>
+	 * Using named parameters does <b>not</b> imply a vulnerability to SQL
+	 * injection. Parameters in the statement will <i>first</i> be set to
+	 * {@literal ?}, and the statement prepared, <i>before</i> the parameter is set
+	 * to the corresponding argument in the map.
+	 * 
+	 * @param arguments the map of argument parameters
+	 * @return this builder
+	 * @throws IllegalArgumentException if the parameters do not match those in the
+	 *                                  query (best practical effort)
+	 */
+	B params(Map<String, Object> arguments);
 	
 	/**
 	 * Sets the fetch size of this initial builder to the specified one (optional operation). <br>
@@ -204,4 +240,11 @@ public interface QueryBuilder<B extends QueryBuilder<B>> {
 		return largeUpdateCount((updateCount) -> updateCount);
 	}
 	
+	/**
+	 * Initiates a batch update
+	 * 
+	 * @return a batch update
+	 */
+	BatchUpdate batch();
+
 }
