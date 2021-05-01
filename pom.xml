@@ -1,8 +1,12 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
+	<parent>
+		<groupId>space.arim.parent</groupId>
+		<artifactId>common-parent</artifactId>
+		<version>0.2.0</version>
+	</parent>
+
 	<groupId>space.arim.jdbcaesar</groupId>
 	<artifactId>jdbcaesar</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
@@ -13,9 +17,7 @@
 	<inceptionYear>2020</inceptionYear>
 	
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-		<junit.version>5.7.0</junit.version>
+		<junit.version>5.7.1</junit.version>
 		<slf4j.version>1.7.30</slf4j.version>
 
 		<!-- Vendors used for integration tests -->
@@ -29,9 +31,9 @@
 	
 	<scm>
 		<connection>scm:git:git://github.com/A248/JdbCaesar.git</connection>
-		<developerConnection>scm:git:ssh://github.com:A248/JdbCaesar.git</developerConnection>
+		<developerConnection>scm:git:https://github.com/A248/JdbCaesar.git</developerConnection>
 		<url>http://github.com/A248/JdbCaesar/tree/master</url>
-	</scm>
+  </scm>
 	
 	<licenses>
 		<license>
@@ -54,17 +56,6 @@
 		</developer>
 	</developers>
 	
-	<distributionManagement>
-		<repository>
-			<id>cloudsmith-deploy</id>
-			<url>https://maven.cloudsmith.io/anand-beh/lesser-gpl3/</url>
-		</repository>
-		<snapshotRepository>
-			<id>cloudsmith-deploy</id>
-			<url>https://maven.cloudsmith.io/anand-beh/lesser-gpl3/</url>
-		</snapshotRepository>
-	</distributionManagement>
-	
 	<build>
 		<plugins>
 			<!-- JAR creation -->
@@ -72,15 +63,13 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.8.1</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<release>8</release>
 				</configuration>
 				<executions>
 					<execution>
 						<id>default-compile</id>
 						<configuration>
-							<source>11</source>
-							<target>11</target>
+							<release>11</release>
 						</configuration>
 					</execution>
 					<execution>
@@ -97,8 +86,7 @@
 					<execution>
 						<id>default-testCompile</id>
 						<configuration>
-							<source>11</source>
-							<target>11</target>
+							<release>11</release>
 						</configuration>
 					</execution>
 				</executions>
@@ -108,62 +96,27 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0-M5</version>
 				<configuration>
-					<trimStackTrace>false</trimStackTrace>
-					<argLine>-Xverify:none -XX:TieredStopAtLevel=1 -XX:-TieredCompilation</argLine>
+					<argLine>-XX:TieredStopAtLevel=1 -XX:-TieredCompilation</argLine>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>3.0.0-M5</version>
 				<configuration>
-					<trimStackTrace>false</trimStackTrace>
-					<argLine>-Xverify:none -XX:TieredStopAtLevel=1 -XX:-TieredCompilation 
+					<argLine>-XX:TieredStopAtLevel=1 -XX:-TieredCompilation
 					--add-opens space.arim.jdbcaesar/space.arim.jdbcaesar.it=ALL-UNNAMED</argLine>
 				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>integration-test</goal>
-							<goal>verify</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 			
-			<!-- Sources and javadoc -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>3.2.0</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+			<!-- Sources and javadoc. Mostly handled by common-parent -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.2.0</version>
 				<configuration>
 					<source>8</source>
 					<excludePackageNames>space.arim.jdbcaesar.internal:space.arim.jdbcaesar.internal.*</excludePackageNames>
 				</configuration>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>javadoc</goal>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
@@ -231,4 +184,11 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>arim-mvn-lgpl3</id>
+			<url>https://mvn-repo.arim.space/lesser-gpl3/</url>
+		</repository>
+	</repositories>
 </project>
