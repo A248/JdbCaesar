@@ -9,7 +9,7 @@
 
 	<groupId>space.arim.jdbcaesar</groupId>
 	<artifactId>jdbcaesar</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	
 	<name>JdbCaesar</name>
 	<description>Conquer the verbosity of plain JDBC.</description>
@@ -33,6 +33,7 @@
 		<connection>scm:git:git://github.com/A248/JdbCaesar.git</connection>
 		<developerConnection>scm:git:https://github.com/A248/JdbCaesar.git</developerConnection>
 		<url>http://github.com/A248/JdbCaesar/tree/master</url>
+    <tag>1.0.0</tag>
   </scm>
 	
 	<licenses>
